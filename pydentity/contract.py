@@ -3,7 +3,6 @@ from pydentity.operators import EQ
 from pydentity.rules import Ref, Rule
 
 
-
 class Contract(object):
     """
     Contract is a policy builder AND is saved verbatim with no processing done, only validation

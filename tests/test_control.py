@@ -41,5 +41,5 @@ class ControlTest(TestCase):
         guard.content({'id': 10, 'name': 'iPhone 15 pro'})
         guard.context({'ip': '10.13.13.13'})
         guard.contact({'email': 'ortserga@gmail.com'})
-        self.assertTrue(guard.accepts)
-        self.assertFalse(guard.rejects)
+        self.assertTrue(guard.accepts())
+        self.assertFalse(guard.rejects())

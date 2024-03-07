@@ -38,9 +38,9 @@ Simple enough, but then, how do you tell a contract what actions are possible, a
 ```py
 ...  # code from above
 
-contract.on('deletes').to('/customer/:id')
+contract.on('delete').to('/customer/:id')
 ```
-To specify actions use the `.on(*actions)` method of the contracts object. Actions can be called whatever you want i.e. `.on('foo')` but pluralized `HTTP` verbs are a popular choice.
+To specify actions use the `.on(*actions)` method of the contracts object. Actions can be called whatever you want i.e. `.on('foo')` - but `HTTP` verbs are a popular choice.
 
 It is also important to note that all contract method calls are order agnostic, this means you called have also called the `.to('/customers/:id')` method before
 the `.on('deletes')` method and still get the same output.
@@ -50,8 +50,8 @@ the `.on('deletes')` method and still get the same output.
 ```
 
 ### Contract Rules &amp; Conditions
-Great, now we know how to build a contract and tell it what actions and content it identifies. But a contract is useless if we have no way of specifying the
-`content`, `contract`, and `context` conditions for which the contract is valid.
+Great, now we know how to build a contract and tell it what actions and content `.to('a-unique-id-for-content')` it identifies. But a contract is useless if we have no way of specifying the
+actual `content`, `contact`, and `context` data for which the contract is valid.
 
 
 #### Controlling Access Based On Content
@@ -65,7 +65,7 @@ from pydentity import Contract
 # pydentity by default denies all access where there is no contract
 # so to delete unlocked orders - this contract is needed
 c = Contract()
-c.on('deletes').to('orders').content({
+c.on('delete').to('orders').content({
     'unlocked': True
 })
 
@@ -77,8 +77,10 @@ d.on('deletes').to('orders/:id').contact({
 })
 ```
 We are going to cover `Contact`, and `Context` blocks in later sections, but before we do it is important to explain how their configurations dictionary works. Dictionaries, hashmaps,
-associative arrays (different names for the same thing) have a common format - `a key` maps to `a value`. By default `condition keys` i.e. dict keys are used for specifying what fields
-in the block to target, and the `values` provide indication of what the value of those fields should be i.e. `constant values` expected to be seen for given contract conditions.
+associative arrays (different names for the same thing) have a common format - `a key` maps to `a value`.
+Pydentity *conditions* i.e. `.contact(**conditions)`, `.content(**conditions)`, `.context(**conditions)` are dictionaries that are passed into the *content*, *contact*, and *context* `pydentity.Contract`
+methods. By default `condition keys` i.e. dict keys are used for specifying what fields in the block(s) - (content, contact, context) to target, and the `values` provide indication of what the value of those fields
+should be i.e. `constant values` expected to be seen for given contract conditions.
 
 For all condition dicts across all blocks i.e. `content, context, contact` - the default
 combination logic is `AND` i.e.
