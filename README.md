@@ -13,7 +13,7 @@ Every information system has:
 
 - Contacts: Entities that want to come in contact with the data (owner of the data, someone granted access by owner, hacker, application) etc.
 
-- Context: Information outside the data i.e. dates or times when no one is allowed to update content, ip address of a contact etc
+- Context: Information outside the data i.e. dates or times when no one is allowed to update content, ip address of a contact etc, information that is not a part of **Content**
 
 - Contracts: What is a legal or illegal operation when Content, Contact, Context is combined together
 
