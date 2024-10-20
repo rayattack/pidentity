@@ -11,11 +11,11 @@ Every information system has:
 
 - Content: this is the data you might want to protect i.e. data stored in the system or system(s)
 
-- Contact: Entities that want to come in contact with the data (owner of the data, someone granted access by owner, hacker, application) etc.
+- Contacts: Entities that want to come in contact with the data (owner of the data, someone granted access by owner, hacker, application) etc.
 
 - Context: Information outside the data i.e. dates or times when no one is allowed to update content, ip address of a contact etc
 
-- Contract: What is a legal or illegal operation when Content, Contact, Context is combined together
+- Contracts: What is a legal or illegal operation when Content, Contact, Context is combined together
 
 - Controls: The system, processes, tools etc. that deny or allows operations _to_ and _on_ content
 
