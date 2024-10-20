@@ -144,13 +144,21 @@ c.on('gets').to('/orders').content({
     '&public': True,
     '&unlocked': True
 })
+
+
+# this contract means give everyone access when orders content is public OR unlocked
+c.on('gets').to('/orders').content({
+    '?public': True,
+    '?unlocked': True
+})
 ```
 To specify `OR` combinations the keys must use the explicit symbol notation with the symbol for `OR` which is a `?`.
 
 ```py
 c = Contract()
 
-# this contract means products is public OR unlocked
+# this contract means allow Contact to the content
+# at address `/products/:id` when it is public OR unlocked
 c.on('updates').to('/products/:id').content({
     '?public': True,
     '?unlocked': True

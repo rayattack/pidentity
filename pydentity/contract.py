@@ -39,7 +39,7 @@ class Contract(object):
 
             # at this point we are sure k has a prefix either added or provided
             macro = MACROS.get(k[1:])
-            if macros and not macro:
+            if macros and not macro:  # i.e. only runs in context cases where macros is True
                 raise ValueError('Context keys must be macros')
 
             if isinstance(v, Rule):
