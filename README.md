@@ -133,13 +133,13 @@ Contract().on('gets').to('/customers').content({
 ```py
 c = Contract()
 
-# this contract means orders content is public AND unlocked
+# this contract means give everyone access when orders content is public AND unlocked
 c.on('gets').to('/orders').content({
     'public': True,
     'unlocked': True
 })
 
-# explicit symbol notation
+# this is the same as above but using explicit symbol notation
 c.on('gets').to('/orders').content({
     '&public': True,
     '&unlocked': True
@@ -202,11 +202,21 @@ protocol.add_contract_sync(c)
 ```
 
 
-## Crash Course
-Pydentity is all about **identifying** _contacts_, protecting _content_, they can have access _to_, as well as the _context_ for that access to be valid. There are a few things to note about Pydentity namely:
-
-- Context: 
+```py
+# this will allow any contact with first_name of Tersoo to delete an order
+d = Contract()
+d.on('delete').to('orders/:id').contact({
+    'first_name': 'Tersoo'
+})
+```
 
 
 #### Contact
 This is recorded personal identifying information that can be used to identify a persona (app, human etc).
+
+
+
+## Crash Course
+Pydentity is all about **identifying** _contacts_, protecting _content_, they can have access _to_, as well as the _context_ for that access to be valid. There are a few things to note about Pydentity namely:
+
+- Context: 
