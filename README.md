@@ -82,7 +82,7 @@ c.on('delete').to('orders').content({
 # this will allow any content at the address `/orders/:id` with category
 # `Perishables` to be deleted
 d = Contract()
-d.on('delete').to('orders/:id').contact({
+d.on('delete').to('/orders/:id').contact({
     'category': 'Perishables'
 })
 ```
