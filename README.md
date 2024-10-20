@@ -16,7 +16,7 @@ Every information system has:
 - **Context**: Information within the information system or that the information system has access to but exists outside of the **Content** or
 protected data i.e. dates or times when no one is allowed to update content, ip address of a contact etc.
 
-- **Contracts**: What is a legal or illegal operation when Content, Contact, Context is combined together
+- **Contracts**: What is a legal or illegal operation when **Content**, **Contact**, **Context** is combined together
 
 - **Controls**: The system, processes, tools etc. that deny or allows operations _to_ and _on_ content
 
