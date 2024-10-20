@@ -32,14 +32,16 @@ class ControlTest(TestCase):
         control = Control(engine='myengine')
         contract = Contract(domain='mydomain')
         contract.on('post').to('/customers/:id')
-        contract.content({'id': 10})
+        contract.content({'owner': contract.this('contact.owner')})
         control.add(contract)
 
         # return a fresh control that does not pollute the original
-        guard = control.start
-        guard.on('post').to('/customers/:id')
-        guard.content({'id': 10, 'name': 'iPhone 15 pro'})
-        guard.context({'ip': '10.13.13.13'})
-        guard.contact({'email': 'ortserga@gmail.com'})
-        self.assertTrue(guard.accepts())
-        self.assertFalse(guard.rejects())
+        can = control.can('post').to('/customers/:id').content({
+            'owner': 10,
+            'name': 'iPhone 15 pro'
+        }).context({
+            'ip': '10.13.13.13'
+        }).contact({
+            'owner': 10
+        })
+        self.assertTrue(can.go())

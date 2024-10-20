@@ -62,16 +62,15 @@ class ContractTest(TestCase):
             contract.context(context)
 
     def test_contract_this(self):
-        return
         contract = Contract(domain='mydomain')
         contact = {
             'id': '132313122',
             'location': contract.this('context.location')
         }
-        _expected = { '&id==': '132313122', '&location@==': 'context.location' }
+        _expected = { '&id:==': '132313122', '&location@==': 'context.location' }
         contract.contact(contact)
         self.assertDictEqual(contract._payload['contact'], _expected)
-    
+
     def test_contract_prepare(self):
         contract = Contract(domain='mydomain')
         data = {

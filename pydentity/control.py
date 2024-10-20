@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from pydentity import Contract
 
 
-from database import initialize_sql
+from pydentity.database import initialize_sql
 
 
 class Control(object):
@@ -28,6 +28,9 @@ class Control(object):
                 payload = contract._payload
                 payload['on'] = action
                 self._contracts.append(payload)
+    
+    def can(self, action: str) -> 'Guard':
+        return Guard(self).on(action)
 
     async def init(self):
         async with self._pool.acquire() as conn:
@@ -57,7 +60,7 @@ class Guard(object):
     def context(self, context: dict):
         self._context = context
 
-    def accepts(self) -> bool:
+    def go(self) -> bool:
         return False
 
     def rejects(self) -> bool:
