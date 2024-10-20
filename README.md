@@ -28,6 +28,7 @@ via **contracts** (combinatory rules) **contextually** (which might include the 
 ## Contracts
 The first thing to understand is _Contracts_. Contracts are how you specify the relationships betweem **_Contacts_** and **_Content_**. How do we create Contracts? Let's look at some code
 
+##### Code Snippet: 1a
 ```py
 from pydentity import Contract
 
@@ -36,6 +37,8 @@ contract = Contract()
 
 
 Simple enough, but then, how do you tell a contract what actions are possible, and how to identify **Content** to be **Control**led?
+
+##### Code Snippet: 1b
 ```py
 ...  # code from above
 
@@ -47,12 +50,12 @@ can be an intuitive option or popular candidate.
 It is also important to note that all **contract** object method calls are order agnostic, this means you called have also called the `.to('/customers/:id')` method before
 the `.on('deletes')` method and still get the same output.
 
-This means the code snippet in snippet *1b* above is equivalent to code in snippet *1c* below.
+This means the code snippet in snippet above is equivalent to code in snippet below.
 
+##### Code Snippet: 1c
 ```py
 ...  # contract.to('/customers/:id').on('deletes', 'posts')
 ```
-`Code Snippet: 1c`
 
 ### Contract Rules &amp; Conditions
 Great, now we know how to build a contract and tell it what actions and content `.to('a-unique-id-for-content')` it identifies. But a contract is useless if we have no way of specifying the
