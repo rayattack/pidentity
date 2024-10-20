@@ -47,6 +47,9 @@ can be an intuitive option or popular candidate.
 It is also important to note that all **contract** object method calls are order agnostic, this means you called have also called the `.to('/customers/:id')` method before
 the `.on('deletes')` method and still get the same output.
 
+This means the code snippet in snippet *1b* above is equivalent to code in snippet *1c* below.
+
+`**snippet**`
 ```py
 ...  # contract.to('/customers/:id').on('deletes', 'posts')
 ```
