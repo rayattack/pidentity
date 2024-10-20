@@ -9,15 +9,16 @@ Pydentity works on a &copy; Micro `C5 Paradigm` which translates to **`Control C
 
 Every information system has:
 
-- Content: this is the data you might want to protect i.e. data stored in the system or system(s)
+- **Content**: this is the data you might want to protect i.e. data stored in the system or system(s)
 
-- Contacts: Entities that want to come in contact with the data (owner of the data, someone granted access by owner, hacker, application) etc.
+- **Contacts**: Entities that want to come in contact with the data (owner of the data, someone granted access by owner, hacker, application) etc.
 
-- Context: Information outside the data i.e. dates or times when no one is allowed to update content, ip address of a contact etc, information that is not a part of **Content**
+- **Context**: Information outside the data i.e. dates or times when no one is allowed to update content, ip address of a contact etc, information that is not a
+part of the **Content**
 
-- Contracts: What is a legal or illegal operation when Content, Contact, Context is combined together
+- **Contracts**: What is a legal or illegal operation when Content, Contact, Context is combined together
 
-- Controls: The system, processes, tools etc. that deny or allows operations _to_ and _on_ content
+- **Controls**: The system, processes, tools etc. that deny or allows operations _to_ and _on_ content
 
 So how does this all relate to C5 - From the definition it means:
 You (your application, company) wants to **control** (allow, deny access _to_ or limit actions _on_) **content** (data, information) from **contact** (application, hacker, human)
