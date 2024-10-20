@@ -79,16 +79,18 @@ c.on('delete').to('orders').content({
 })
 
 
-# this will allow any contact with first_name of Tersoo to delete an order
+# this will allow any content at the address `/orders/:id` with category `Perishables` to be deleted
 d = Contract()
-d.on('deletes').to('orders/:id').contact({
-    'first_name': 'Tersoo'
+d.on('delete').to('orders/:id').contact({
+    'category': 'Perishables'
 })
 ```
 We are going to cover `Contact`, and `Context` blocks in later sections, but before we do it is important to explain how their configurations dictionary works. Dictionaries, hashmaps,
 associative arrays (different names for the same thing) have a common format - `a key` maps to `a value`.
 Pydentity *conditions* i.e. `.contact(**conditions)`, `.content(**conditions)`, `.context(**conditions)` are dictionaries that are passed into the *content*, *contact*, and *context* `pydentity.Contract`
-methods. By default `condition keys` i.e. dict keys are used for specifying what fields in the block(s) - (content, contact, context) to target, and the `values` provide indication of what the value of those fields
+methods.
+
+By default `condition keys` i.e. dict keys are used for specifying what fields in the block(s) - (content, contact, context) to target, and the `values` provide indication of what the value of those fields
 should be i.e. `constant values` expected to be seen for given contract conditions.
 
 For all condition dicts across all blocks i.e. `content, context, contact` - the default
