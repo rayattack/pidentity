@@ -54,7 +54,7 @@ This means the code snippet in snippet `1b` above is equivalent to code in snipp
 
 ##### Code Snippet: 1c
 ```py
-...  # contract.to('/customers/:id').on('deletes', 'posts')
+contract.to('/customers/:id').on('deletes', 'posts')
 ```
 
 ### Contract Rules &amp; Conditions
