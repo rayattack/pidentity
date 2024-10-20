@@ -49,10 +49,10 @@ the `.on('deletes')` method and still get the same output.
 
 This means the code snippet in snippet *1b* above is equivalent to code in snippet *1c* below.
 
-`Snippet: 1c`
 ```py
 ...  # contract.to('/customers/:id').on('deletes', 'posts')
 ```
+`Code Snippet: 1c`
 
 ### Contract Rules &amp; Conditions
 Great, now we know how to build a contract and tell it what actions and content `.to('a-unique-id-for-content')` it identifies. But a contract is useless if we have no way of specifying the
