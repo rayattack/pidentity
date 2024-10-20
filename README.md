@@ -42,7 +42,7 @@ Simple enough, but then, how do you tell a contract what actions are possible, a
 ```py
 ...  # code from above
 
-contract.on('delete').to('/customer/:id')
+contract.on('delete').to('/customers/:id')
 ```
 To specify actions use the `.on(*actions)` method of the contracts object. Actions can be called whatever you want i.e. `.on('foo')` - for web applications `HTTP` verbs
 can be an intuitive option or popular candidate.
