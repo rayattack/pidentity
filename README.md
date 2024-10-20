@@ -49,7 +49,7 @@ the `.on('deletes')` method and still get the same output.
 
 This means the code snippet in snippet *1b* above is equivalent to code in snippet *1c* below.
 
-`**snippet**`
+**`Snippet: 1c`**
 ```py
 ...  # contract.to('/customers/:id').on('deletes', 'posts')
 ```
