@@ -26,7 +26,7 @@ via **contracts** (combinatory rules) **contextually** (which might include the 
 
 
 ## Contracts
-The first thing to understand is _Contracts_. Contracts are how you specify the relationships betweem _Contacts_ and _Content_. How do we create Contracts? Let's look at some code
+The first thing to understand is _Contracts_. Contracts are how you specify the relationships betweem **_Contacts_** and **_Content_**. How do we create Contracts? Let's look at some code
 
 ```py
 from pydentity import Contract
