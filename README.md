@@ -35,7 +35,7 @@ contract = Contract()
 ```
 
 
-Simple enough, but then, how do you tell a contract what actions are possible, and how to identify content to be controlled?
+Simple enough, but then, how do you tell a contract what actions are possible, and how to identify **Content** to be **Control**led?
 ```py
 ...  # code from above
 
