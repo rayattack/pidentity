@@ -22,7 +22,7 @@ protected data i.e. dates or times when no one is allowed to update content, ip 
 
 So how does this all relate to C5 - From the definition it means:
 You (your application, company) wants to **control** (allow, deny access _to_ or limit actions _on_) **content** (data, information) from **contact** (application, hacker, human)
-via **contracts** (combinatory rules) **contextually** (that might use data not stored within the content being controlled).
+via **contracts** (combinatory rules) **contextually** (which might include the use of data not stored within the content being controlled).
 
 
 ## Contracts
