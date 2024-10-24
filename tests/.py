@@ -1,5 +1,5 @@
-from pydentity import Contract, Control
-# from pydentity.rules import BTW, EQUALS, LT, GT, LTE, GTE, NEQ, IN, NIN, REGEX
+from pidentity import Contract, Control
+# from pidentity.rules import BTW, EQUALS, LT, GT, LTE, GTE, NEQ, IN, NIN, REGEX
 
 
 

@@ -1,4 +1,4 @@
-from pydentity import Contract, Control
+from pidentity import Contract, Control
 
 
 contract = Contract(domain='mydomain')

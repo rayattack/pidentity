@@ -2,8 +2,12 @@ site_name: Pydentity
 nav:
   - Home:
     - Getting Started: index.md
-    - Access Control: control.md
+    - Access Control: access.md
     - Contracts: contracts.md
+    - Content: content.md
+    - Contacts: contacts.md
+    - Guard: guard.md
+    - Control(ler): control.md
     - Persistence: persistence.md
     - Contributions: contributions.md
   - API:

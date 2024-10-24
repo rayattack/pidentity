@@ -8,7 +8,7 @@ be **allowed** (legal) or **rejected** (illegal).
 How do we create Contracts? Let's look at some code
 
 ```py
-from pydentity import Contract
+from pidentity import Contract
 
 contract = Contract()
 ```
@@ -38,7 +38,7 @@ The example above also show the use of the `.to(location: str)` method that acce
 !!! note
 
     The **action**, and **location** form the unique identity of a contract i.e. if you have **`100`** **.on(deletes).to('/customer/:id')** contracts **ALL of them** will be evaluated
-    whenever the `control: pydentity.Control` object is asked to evaluate a **deletes** action **to** the `/customers/:id` **location**.
+    whenever the `control: pidentity.Control` object is asked to evaluate a **deletes** action **to** the `/customers/:id` **location**.
 
 
 ### Rules &amp; Conditions
@@ -48,13 +48,13 @@ Great, now we know how to build a contract and tell it what actions and content 
 
 ### Content Based Control
 If you want to control access to content based on the data in the content itself - you tell your contract this by using the `.content(conditions: dict)` method
-of the `contract` object. It is important to note that by default **`pydentity denies all access unless a contract is found`**.
+of the `contract` object. It is important to note that by default **`pidentity denies all access unless a contract is found`**.
 
 ```py
-from pydentity import Contract
+from pidentity import Contract
 
 
-# pydentity by default denies all access where there is no contract
+# pidentity by default denies all access where there is no contract
 # so to delete unlocked orders - this contract is needed
 c = Contract()
 c.on('deletes').to('orders').content({
@@ -92,8 +92,8 @@ this is because `&` as the default symbol for `condition keys`, in addition, `AN
 To use `OR` logic instead of `AND`, use the **OR** symbol `?` as the first character of your conditions dict i.e.
 
 ```py
-from pydentity import Contract
-from pydentity.conditions import GT  # other options -> GTE, LT, BETWEEN, IN, NIN etc
+from pidentity import Contract
+from pidentity.conditions import GT  # other options -> GTE, LT, BETWEEN, IN, NIN etc
 
 
 # this contract will allow
@@ -136,20 +136,20 @@ c.on('updates').to('/products/:id').content({
 ```
 
 ```py
-from pydentity import Controls
+from pidentity import Controls
 
 ... # code from previous block here
 
 controls = Controls()
 controls.add(c, d)
 ```
-These contracts are loaded in memory and for test use cases that is fine, but to make the most of pydentity you might want to connect a storage engine
+These contracts are loaded in memory and for test use cases that is fine, but to make the most of pidentity you might want to connect a storage engine
 like a database for contracts to be saved and retrieved easily.
 
 Currently only redis, postgres, sql server, oracle db, and mysql is supported as a storage engine.
 
 ```py
-from pydentity import Contract, Controls
+from pidentity import Contract, Controls
 
 controls = Controls(engine='postgres', dsn=...)
 contract = Contract()
@@ -180,7 +180,7 @@ protocol.add_contract_sync(c)
 ```
 
 #### Contact
-This is recorded personal identifying information that can be used to identify a persona (app, human etc). Contact blocks are how you tell pydentity to
+This is recorded personal identifying information that can be used to identify a persona (app, human etc). Contact blocks are how you tell pidentity to
 target personas. As usual - let's look at some code.
 
 ```py

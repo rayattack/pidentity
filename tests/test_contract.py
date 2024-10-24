@@ -1,8 +1,9 @@
 from unittest import TestCase
 from datetime import datetime
 
-from pydentity.contract import Contract
-from pydentity.operators import IN
+from pidentity.constants import CONTACT, CONTENT, CONTEXT
+from pidentity.contract import Contract
+from pidentity.operators import IN
 
 
 class ContractTest(TestCase):
@@ -13,9 +14,9 @@ class ContractTest(TestCase):
         self.assertEqual(payload['domain'], 'mydomain')
         self.assertEqual(payload['to'], '')
         self.assertEqual(payload['on'], '')
-        self.assertEqual(payload['contact'], {})
-        self.assertEqual(payload['content'], {})
-        self.assertEqual(payload['context'], {})
+        self.assertEqual(payload[CONTACT], {})
+        self.assertEqual(payload[CONTENT], {})
+        self.assertEqual(payload[CONTEXT], {})
         self.assertEqual(contract._on, [])
 
     def test_contract_on(self):
@@ -27,33 +28,33 @@ class ContractTest(TestCase):
         contract.on('put', 'get')
         self.assertEqual(contract._on[0], 'put')
         self.assertEqual(contract._on[1], 'get')
-    
+
     def test_contract_to(self):
         contract = Contract(domain='mydomain')
         contract.to('/customers/:id')
         self.assertEqual(contract._payload['to'], '/customers/:id')
-    
+
     def test_contract_contact(self):
         contract = Contract(domain='mydomain')
-        self.assertEqual(contract._payload['contact'], {})
+        self.assertEqual(contract._payload[CONTACT], {})
         contact = {'id': 10}
         contract.contact(contact)
-        self.assertEqual(contract._payload['contact'].get('&id:=='), 10)
-    
+        self.assertEqual(contract._payload[CONTACT].get('&id:=='), 10)
+
     def test_contract_content(self):
         contract = Contract(domain='mydomain')
-        self.assertEqual(contract._payload['content'], {})
+        self.assertEqual(contract._payload[CONTENT], {})
         content = {'id': 10}
         contract.content(content)
-        self.assertEqual(contract._payload['content'].get('&id:=='), 10)
-    
+        self.assertEqual(contract._payload[CONTENT].get('&id:=='), 10)
+
     def test_contract_context(self):
         now = datetime.now()
         contract = Contract(domain='mydomain')
-        self.assertEqual(contract._payload['context'], {})
+        self.assertEqual(contract._payload[CONTEXT], {})
         context = {'datetime': now}
         contract.context(context)
-        self.assertEqual(contract._payload['context'].get('&datetime:=='), now)
+        self.assertEqual(contract._payload[CONTEXT].get('&datetime:=='), now)
 
     def test_contract_context_accepts_only_macros(self):
         contract = Contract(domain='mydomain')
@@ -69,7 +70,7 @@ class ContractTest(TestCase):
         }
         _expected = { '&id:==': '132313122', '&location@==': 'context.location' }
         contract.contact(contact)
-        self.assertDictEqual(contract._payload['contact'], _expected)
+        self.assertDictEqual(contract._payload[CONTACT], _expected)
 
     def test_contract_prepare(self):
         contract = Contract(domain='mydomain')
