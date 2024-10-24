@@ -87,7 +87,7 @@ class ControlTest(TestCase):
             'owner': 10
         })
         self.assertTrue(guard.scans())
-    
+
     def test_control_sync(self):
         self.assertTrue(self.control.sync('test'))
         self.assertTrue(Path('.pidentity/test.json').exists())
@@ -97,6 +97,12 @@ class ControlTest(TestCase):
         rows = cursor.execute("select * from regulators where unto = 'uu7483-eea3a-akdje283-adkea'").fetchall()
         cursor.close()
         self.assertEqual(len(rows), 1)
-    
-    def test_control_swap(self):
-        raise ValueError
+        self.control.nuke('test')
+
+    def test_control_nuke(self):
+        control = Control('bandana')
+        control.inits()
+        self.assertTrue(Path('.pidentity/bandana.db').exists())
+
+        control.nuke('bandana')
+        self.assertFalse(Path('.pidentity/bandana.db').exists())

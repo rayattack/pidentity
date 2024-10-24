@@ -104,6 +104,11 @@ class Control(object):
         try: cursor.executescript(SQL)
         except: pass
         finally: cursor.close()
+    
+    def nuke(self, engine: str):
+        base = f'{PIDENTITY}/{engine}.db'
+        if(Path(base).exists()): Path.unlink(base)
+        print(base); print(Path(base).exists())
 
     def swap(self, *contracts: 'Contract') -> 'Control':
         def _xtract(k: str, data: dict):
