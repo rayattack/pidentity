@@ -31,9 +31,9 @@ class Guard(object):
         if(suffix): k = k[:-3]
         if(not prefix): k = f'&{k}'
 
-    def _evaluator(self, conditions: dict, data: dict):
+    def _evaluator(self, condition: dict, data: dict):
         """
-        Evaluate the conditions i.e. {
+        Evaluate the condition i.e. {
             '&id:==': '132313122',
             '&name:==': 'John Doe',
             '&age:==': 18,
@@ -62,11 +62,11 @@ class Guard(object):
             # &location@== -> &, location, @==
             return k[0], k[1:-3], k[-3:]
 
-        for token, scale in conditions.items():
+        for token, scale in condition.items():
             prefix, key, op = _exparse(token)
             value = data.get(key)
             Operation(op).compare(value, scale)
-    
+
     def _operation(self):
         pass
 

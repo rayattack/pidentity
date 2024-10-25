@@ -1,6 +1,46 @@
-from pidentity.constants import CONTACT, CONTENT, CONTEXT, MACROS, OPERANDS, SYMBOLS
+from pidentity.constants import CONTACT, CONTENT, CONTEXT, MACROS, OPERANDS, SYMBOLS, ON, TO, AT
+from pidentity.database import SELECT_CONDITIONS_SQL
 from pidentity.operators import EQ
 from pidentity.rules import Ref, Rule
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING: from pidentity.control import Control
+
+
+class Condition(object):
+    def __init__(self, ctrl: 'Control'):
+        self.__ctrl = ctrl
+
+    def __eval(self, what: str):
+        return self.__ctrl.select(self.__on, self.__to, what)
+
+    def on(self, on: str):
+        self.__on = on
+        return self
+
+    def to(self, to: str):
+        self.__to = to
+        return self
+
+    def at(self, at: str):
+        self.__at = at
+        return self
+    
+    @property
+    def control(self):
+        return self.__ctrl
+
+    @property
+    def contact(self):
+        return self.__eval(CONTACT)
+
+    @property
+    def content(self):
+        return self.__eval(CONTENT)
+
+    @property
+    def context(self):
+        return self.__eval(CONTEXT)
 
 
 class Contract(object):
@@ -19,6 +59,10 @@ class Contract(object):
             CONTENT: {},
             CONTEXT: {},
         }
+
+    def __view(self, on, to, at):
+        cursor = self.cursor
+        cursor.execute(SELECT_CONDITIONS_SQL, {ON: on, TO: to, AT: at})
 
     @staticmethod
     def prepare(data: dict, macros=False, expand = True):
@@ -61,7 +105,10 @@ class Contract(object):
             k, v = _(key, value)
             _data[k] = v
         return _data
-    
+
+    def at(self, op: str, data: dict) -> 'Contract':
+        return self.what(op, data)
+
     def on(self, *actions: str):
         return self.upon(*actions)
 

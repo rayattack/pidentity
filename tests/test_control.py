@@ -35,17 +35,17 @@ class ControlTest(TestCase):
                 ON: 'post',
                 TO: '/customers/:id',
                 AT: v,
-                'conditions': '{}'
+                'condition': '{}'
             })
         self.assertListEqual([], control.saved)
 
         cursor = control.cursor
-        one = cursor.execute('select * from regulators').fetchone()
+        one = cursor.execute('select * from conditions').fetchone()
         cursor.close()
         self.assertIsNotNone(one)
 
     def test_control_drop(self):
-        _sql = f"select * from regulators where {TO} = '/orders/:id/line-items'"
+        _sql = f"select * from conditions where {TO} = '/orders/:id/line-items'"
         control = Control(engine=DB)
         contract = Contract()
         control.add(
@@ -94,7 +94,7 @@ class ControlTest(TestCase):
         self.assertTrue(Path('.pidentity/test.db').exists())
 
         cursor = self.control.cursor
-        rows = cursor.execute("select * from regulators where unto = 'uu7483-eea3a-akdje283-adkea'").fetchall()
+        rows = cursor.execute("select * from conditions where unto = 'uu7483-eea3a-akdje283-adkea'").fetchall()
         cursor.close()
         self.assertEqual(len(rows), 1)
         self.control.nuke('test')
@@ -106,3 +106,17 @@ class ControlTest(TestCase):
 
         control.nuke('bandana')
         self.assertFalse(Path('.pidentity/bandana.db').exists())
+
+    def test_control_swap(self):
+        ctrl = Control('swapper').inits()
+        ctrl.add(Contract().on('foo').to('10001').contact({"identifier": 10001}))
+        ctrl.add(Contract().on('bar').to('10001').content({"unlocked": True}))
+        contract = ctrl._contracts[0]
+
+        contact = ctrl.condition.on('foo').to('10001').contact
+        self.assertIsNotNone(contact)
+        self.assertEqual(contract.get('contact'), contact)
+
+        ctrl.swap(Contract().on('foo').to('10001').contact({"identifier": 10002}))
+        contact = ctrl.condition.on('foo').to('10001').contact
+        self.assertEqual(contact.get('&identifier:=='), 10002)

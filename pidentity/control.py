@@ -4,12 +4,13 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 from sqlite3 import Cursor, connect, Connection
 
-from pidentity import Contract
+from pidentity import Contract, Condition
 from pidentity.constants import CONTACT, CONTENT, CONTEXT, PIDENTITY, ON, TO, AT
 from pidentity.database import (
-    DELETE_REGULATORS_SQL,
-    INSERT_REGULATORS_SQL,
-    UPDATE_REGULATORS_SQL,
+    DELETE_CONDITIONS_SQL,
+    INSERT_CONDITIONS_SQL,
+    UPDATE_CONDITIONS_SQL,
+    SELECT_CONDITIONS_SQL,
     SQL
 )
 from pidentity.guard import Guard
@@ -36,7 +37,7 @@ class Control(object):
 
     def __save(self) -> 'Control':
         cursor = self.cursor
-        try: cursor.executemany(INSERT_REGULATORS_SQL, self._unsaved)
+        try: cursor.executemany(INSERT_CONDITIONS_SQL, self._unsaved)
         except: pass
         finally:
             cursor.close()
@@ -47,9 +48,19 @@ class Control(object):
     
     def __swap(self) -> 'Control':
         cursor = self.cursor
-        try: cursor.executemany(UPDATE_REGULATORS_SQL, self._unswapped)
+        try: cursor.executemany(UPDATE_CONDITIONS_SQL, self._unswapped)
         except: pass
         finally: cursor.close(); cursor.connection.commit()
+
+    def select(self, on: str, to: str, at: str):
+        cursor = self.cursor
+        condition = ''
+        try:  condition = cursor.execute(SELECT_CONDITIONS_SQL, {ON: on, TO: to, AT: at}).fetchone()
+        except: pass
+        finally: cursor.close()
+
+        print(condition)
+        if condition: return loads(condition[0])
 
     def __sync(self, database: str, values: list):
         # if db file exists - nuke it
@@ -57,7 +68,7 @@ class Control(object):
         self.__db = connect(database)
         self.inits()
         print(values)
-        self.__db.cursor().executemany(INSERT_REGULATORS_SQL, values)
+        self.__db.cursor().executemany(INSERT_CONDITIONS_SQL, values)
         return True
 
     @property
@@ -77,10 +88,14 @@ class Control(object):
                     ON: action,
                     TO: payload['to'],
                     AT: k,
-                    'conditions': condition
+                    'condition': condition
                 } for k, condition in [_xtract(CONTACT, payload), _xtract(CONTENT, payload), _xtract(CONTEXT, payload)]]
         self.__save()
         return self
+
+    @property
+    def condition(self):
+        return Condition(self)
 
     def drop(self, *contracts: 'Contract'):
         vals = []
@@ -90,7 +105,7 @@ class Control(object):
                 payload = contract._payload
                 data = [{ON: on, TO: payload['to'], AT: k} for k in [CONTACT, CONTENT, CONTEXT]]
                 vals.extend(data)
-        self.cursor.executemany(DELETE_REGULATORS_SQL, vals)
+        self.cursor.executemany(DELETE_CONDITIONS_SQL, vals)
 
     def guard(self) -> 'Guard':
         """
@@ -99,11 +114,12 @@ class Control(object):
         """
         return Guard(self)
 
-    def inits(self):
+    def inits(self) -> 'Control':
         cursor = self.cursor
         try: cursor.executescript(SQL)
         except: pass
         finally: cursor.close()
+        return self
     
     def nuke(self, engine: str):
         base = f'{PIDENTITY}/{engine}.db'
@@ -118,12 +134,11 @@ class Control(object):
             for action in contract._on:
                 payload = contract._payload
                 payload['on'] = action
-                self._contracts.append(payload)
                 self._unswapped = [{
                     ON: action,
                     TO: payload['to'],
                     AT: k,
-                    'conditions': condition
+                    'condition': condition
                 } for k, condition in [_xtract(CONTACT, payload), _xtract(CONTENT, payload), _xtract(CONTEXT, payload)]]
         self.__swap()
         return self
@@ -141,7 +156,7 @@ class Control(object):
 
         json_data = loads(json_string)
         for data in json_data:
-            data['conditions'] = dumps(data.get('conditions', {}))
+            data['condition'] = dumps(data.get('condition', {}))
         return self.__sync(database, json_data)
 
     @property
@@ -149,3 +164,4 @@ class Control(object):
         saved = self.__saved
         self.__saved = []
         return saved
+,@FRWbW/Z8ABa7c
