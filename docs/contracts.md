@@ -43,7 +43,7 @@ The example above also show the use of the `.to(location: str)` method that acce
 
 ### Rules &amp; Conditions
 Great, now we know how to build a contract and tell it what actions and content it identifies. But a contract is useless if we have no way of specifying the
-`content`, `contract`, and `context` conditions for which the contract is valid.
+`content`, `contact`, and `context` conditions for which the contract is valid.
 
 
 ### Content Based Control
@@ -135,53 +135,4 @@ c.on('updates').to('/products/:id').content({
 })
 ```
 
-```py
-from pidentity import Controls
 
-... # code from previous block here
-
-controls = Controls()
-controls.add(c, d)
-```
-These contracts are loaded in memory and for test use cases that is fine, but to make the most of pidentity you might want to connect a storage engine
-like a database for contracts to be saved and retrieved easily.
-
-Currently only redis, postgres, sql server, oracle db, and mysql is supported as a storage engine.
-
-```py
-from pidentity import Contract, Controls
-
-controls = Controls(engine='postgres', dsn=...)
-contract = Contract()
-
-contract.on('patches').to('/customers/:id').context({
-    'cidr': '10.0.0.0/24'
-})
-# contracts above are added in-memory but not saved, to persist contracts?
-await controls.save()
-
-# for synchronous use cases use save sync
-controls.saves()
-```
-
-```py
-
-# now we can provide some context, content, and contact rules/conditions we
-# want to combine with the possible actions specified above
-
-c.context({})  # let's use an empty dict for now - this will allow everyone but it's good enough for now
-c.content({})  # empty dict for now
-c.contact({})  # empty dict for now
-
-
-# finally let's add this contract to our controls for saving so it can be used later
-# await protocol.add_contract(c) also possible
-protocol.add_contract_sync(c)
-```
-
-#### Contact
-This is recorded personal identifying information that can be used to identify a persona (app, human etc). Contact blocks are how you tell pidentity to
-target personas. As usual - let's look at some code.
-
-```py
-```

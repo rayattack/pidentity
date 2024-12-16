@@ -1,4 +1,4 @@
-from pidentity.constants import CONTACT, CONTENT, CONTEXT, MACROS, OPERANDS, SYMBOLS, ON, TO, AT
+from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, MACROS, OPERANDS, SYMBOLS, ON, TO, AT
 from pidentity.database import SELECT_CONDITIONS_SQL
 from pidentity.operators import EQ
 from pidentity.rules import Ref, Rule
@@ -7,54 +7,18 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING: from pidentity.control import Control
 
 
-class Condition(object):
-    def __init__(self, ctrl: 'Control'):
-        self.__ctrl = ctrl
-
-    def __eval(self, what: str):
-        return self.__ctrl.select(self.__on, self.__to, what)
-
-    def on(self, on: str):
-        self.__on = on
-        return self
-
-    def to(self, to: str):
-        self.__to = to
-        return self
-
-    def at(self, at: str):
-        self.__at = at
-        return self
-    
-    @property
-    def control(self):
-        return self.__ctrl
-
-    @property
-    def contact(self):
-        return self.__eval(CONTACT)
-
-    @property
-    def content(self):
-        return self.__eval(CONTENT)
-
-    @property
-    def context(self):
-        return self.__eval(CONTEXT)
-
-
 class Contract(object):
     """
     Contract is a policy builder AND is saved verbatim with no processing done, only validation
     of condition syntax as the actual matching and processing is done in the controls when this
     contract is retrieved from the chosen data store.
     """
-    def __init__(self, domain: str = ''):
+    def __init__(self, domain: str = '*'):
         self._on = []  # iterate over this and repeat _payload with each as 'on' value
         self._payload = {
             'on': '',  # will be saved as single action with to, contact, content, context etc. copied to each action
             'to': '',
-            'domain': domain,
+            DOMAIN: domain,
             CONTACT: {},
             CONTENT: {},
             CONTEXT: {},
@@ -152,3 +116,4 @@ class Contract(object):
         if walkway[0] not in ['contact', 'context', 'content']:
             raise ValueError(f'Invalid key {key}')
         return Ref(key)
+

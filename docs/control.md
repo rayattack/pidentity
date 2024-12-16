@@ -30,3 +30,57 @@ from pidentity import Control
 control = Control()
 ```
 We'll come back to `pidentity.Control` and its API later once we have finished exploring `pidentity.Contract` and have understood it better - as this will make it easier to understand the `pidentity.Control` object and its [`API`](api/contracts.md).
+
+
+```py
+from pidentity import Controls
+
+... # code from previous block here
+
+controls = Controls()
+controls.add(c, d)
+```
+These contracts are loaded in memory and for test use cases that is fine, but to make the most of pidentity you might want to connect a storage engine
+like a database for contracts to be saved and retrieved easily.
+
+Currently only redis, postgres, sql server, oracle db, and mysql is supported as a storage engine.
+
+```py
+from pidentity import Contract, Controls
+
+controls = Controls(engine='postgres', dsn=...)
+contract = Contract()
+
+contract.on('patches').to('/customers/:id').context({
+    'cidr': '10.0.0.0/24'
+})
+
+# contracts above are added in-memory but not saved, to persist contracts?
+control.add(contract)
+await controls.save()
+
+# for synchronous use cases use save sync
+controls.saves()
+```
+
+```py
+
+# now we can provide some context, content, and contact rules/conditions we
+# want to combine with the possible actions specified above
+
+c.context({})  # empty dict (allows everything) but good enough for now
+c.content({})  # empty dict for now
+c.contact({})  # empty dict for now
+
+
+# finally let's add this contract to our controls for saving so it can be used later
+# await protocol.add_contract(c) also possible
+control.add(c)
+```
+
+#### Contact
+This is recorded personal identifying information that can be used to identify a persona (app, human etc). Contact blocks are how you tell pidentity to
+target personas. As usual - let's look at some code.
+
+```py
+```

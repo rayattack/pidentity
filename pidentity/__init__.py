@@ -1,3 +1,3 @@
-from pidentity.contract import Contract, Condition
-from pidentity.control import Control
+from pidentity.contract import Contract
+from pidentity.control import Control, Controller, Conditions
 from pidentity.guard import Guard

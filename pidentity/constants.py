@@ -4,6 +4,7 @@ from pidentity.macros import *
 CONTACT = "contact"
 CONTENT = "content"
 CONTEXT = "context"
+DOMAIN = "domain"
 PIDENTITY = '.pidentity'
 
 

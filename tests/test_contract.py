@@ -97,3 +97,4 @@ class ContractTest(TestCase):
             }
         }
         self.assertDictEqual(contract.prepare(data), _expected)
+

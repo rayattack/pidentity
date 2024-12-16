@@ -3,7 +3,7 @@ from pathlib import Path
 from unittest import TestCase
 
 from pidentity import Contract, Control
-from pidentity.constants import CONTACT, CONTENT, CONTEXT, ON, TO, AT
+from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, ON, TO, AT
 
 
 DB = 'pidentity'
@@ -17,7 +17,7 @@ class ControlTest(TestCase):
 
     def test_control_payload_structure(self):
         control = Control(engine=DB)
-        self.assertEqual(control._contracts, [])
+        self.assertEqual(control._contracts, {})
 
     def test_control_init(self):
         self.control.inits()
@@ -27,7 +27,9 @@ class ControlTest(TestCase):
         contract = Contract(domain='mydomain')
         contract.on('post').to('/customers/:id')
         control.add(contract)
-        self.assertEqual(control._contracts[0], contract._payload)
+
+        x = control._contracts.get('post:/customers/:id')
+        self.assertEqual(x, contract._payload)
 
         saved = control.saved
         for i, v in enumerate([CONTACT, CONTENT, CONTEXT]):
@@ -35,6 +37,7 @@ class ControlTest(TestCase):
                 ON: 'post',
                 TO: '/customers/:id',
                 AT: v,
+                DOMAIN: 'mydomain',
                 'condition': '{}'
             })
         self.assertListEqual([], control.saved)
@@ -76,8 +79,7 @@ class ControlTest(TestCase):
         control.add(contract)
 
         # return a fresh control that does not pollute the original
-        guard = control.guard()
-        guard = guard.on('post').to('/customers/:id')
+        guard = control.evaluate.on('post').to('/customers/:id')
         guard.content({
             'owner': 10,
             'name': 'iPhone 15 pro'
@@ -111,12 +113,13 @@ class ControlTest(TestCase):
         ctrl = Control('swapper').inits()
         ctrl.add(Contract().on('foo').to('10001').contact({"identifier": 10001}))
         ctrl.add(Contract().on('bar').to('10001').content({"unlocked": True}))
-        contract = ctrl._contracts[0]
+        contract = ctrl._contracts.get('foo:10001')
 
-        contact = ctrl.condition.on('foo').to('10001').contact
+        contact = ctrl.on('foo').to('10001').contact
         self.assertIsNotNone(contact)
         self.assertEqual(contract.get('contact'), contact)
 
         ctrl.swap(Contract().on('foo').to('10001').contact({"identifier": 10002}))
-        contact = ctrl.condition.on('foo').to('10001').contact
+        contact = ctrl.on('foo').to('10001').contact
         self.assertEqual(contact.get('&identifier:=='), 10002)
+
