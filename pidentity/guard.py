@@ -37,8 +37,8 @@ class Guard(object):
             '&id:==': '132313122',
             '&name:==': 'John Doe',
             '&age:==': 18,
-            '&location@==': 'context.location',
-            '&reference@??': 'contact.id',
+            '&location@==': '$context.location',
+            '&reference@??': '$contact.id',
             '&address:::': {
                 '&city:==': 'New York',
                 '&state:==': 'NY',

@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from unittest import TestCase
 
-from pidentity import Contract, Control
+from pidentity import Contract, Control, Controller
 from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, ON, TO, AT
 
 
@@ -18,6 +18,10 @@ class ControlTest(TestCase):
     def test_control_payload_structure(self):
         control = Control(engine=DB)
         self.assertEqual(control._contracts, {})
+
+    def test_control_up(self):
+        controller = self.control.up()
+        self.assertIsInstance(controller, Controller)
 
     def test_control_init(self):
         self.control.inits()

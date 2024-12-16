@@ -14,6 +14,7 @@ from pidentity.database import (
     SQL
 )
 from pidentity.guard import Guard
+from pidentity.macros import Operation
 
 
 ON_REQUIRED = 'Every contract must have a valid action and destination before being added to a control'
@@ -21,20 +22,93 @@ ON_REQUIRED = 'Every contract must have a valid action and destination before be
 
 
 class Controller(object):
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, control):
+        self.__ctrl = control
+        self.__content = None
+        self.__contact = None
+        self.__context = None
+
+    def __parse_rule_key(self, key):
+        logic = key[0]
+        field = key[1:-3]
+        op = OPERATIONS.get(key[-3:])
+        return logic, field, op
+
+    def __parse_rule_value(self, field):
+        prefix = field.split('.')[0]
+        if prefix in ['$content', '$context', '$contact']:
+            return prefix, self.__stores.get(prefix)
+        return None, field
 
     def content(self, values: dict):
+        self.__content = values
+        self.__stores['$content'] = values
         return self
 
     def context(self, values: dict):
+        self.__context = values
+        self.__stores['$context'] = values
         return self
 
     def contact(self, values: dict):
+        self.__contact = values
+        self.__stores['$contact'] = values
         return self
+
+    def evaluator(self, rules, data):
+        """
+        Evaluate the condition i.e. {
+            '&id:==': '132313122',
+            '&name:==': 'John Doe',
+            '&age:==': 18,
+            '&location@==': '$context.location',
+            '&reference@??': '$contact.id',
+            '&address:::': {
+                '&city:==': 'New York',
+                '&state:==': 'NY',
+            }
+        }
+        
+        1. get the key so we can expand it
+            - &id:== will be expanded into key, op where op is <type, equals: Callable> and key = &id
+            the key &reference@?? will be op <type, Callable: refs('contact.id', op: Callable)>
+        
+        2. extract the values from the data to run the ops upon
+
+        # Content Evaluation
+        {
+            '@': lambda (k: string): return 
+            ':': lambda k: 
+        }
+        """
+        for key, value in enumerate(rules):
+            # logic = & || or, field = key i.e. id, operator = Operator() instance
+            logic, field, operator = self.__parse_rule_key(key)
+
+            # reference == $lookup path or None, datum is the actual data or the $store i.e. context, content etc if reference is True
+            # if actual value we keep it to be used in comparison operation
+            # if it is a reference then get the actual value to be used in comparison operation
+            reference, value_in_rules = self.__parse_rule_value(value)
+            if reference: value_in_rules = _extract(reference, datum)
+                    
+            # check if the field passes validation for the commensurate rules
+            value_in_data = data.get(field)
+            if (not value_in_data) and (logia == '&'): return False
+            if (not operation(value_in_rules, value_in_data)) and (logia == '&'): return False
+        return True
     
     def go(self) -> bool:
-        return False
+        conditions, good = [], []
+        # get the condition from the control (db) if necessary
+        conditions.append(self.__ctrl.select)
+        for o in [self.__context, self.__content, self.__context]:
+            if(o): conditions.append(self.__ctrl.select(o.on, o.to, o.at, o.domain))
+
+        if not conditions: return False
+        for condition in conditions:
+            good.append(self.evaluator(conditions[0], conditions[1]))
+
+        return all(good)
 
 
 class Conditions(object):
@@ -263,4 +337,7 @@ class Control(object):
         saved = self.__saved
         self.__saved = []
         return saved
+
+    def up(self) -> Controller:
+        return Controller(self)
 
