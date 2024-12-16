@@ -61,7 +61,6 @@ class Contract(object):
                 suffix = _v.operator
                 val = _v.value
 
-            print('this is the val: ', val)
             return f'{k}{suffix}', val
 
         _data = {}

@@ -71,6 +71,12 @@ class ControlTest(TestCase):
         contract = Contract(domain='mydomain')
         self.assertRaises(ValueError, control.add, contract)
 
+    def test_control_clean(self):
+        self.control.add(Contract().on('foo').to('bar').content({'yes': True}))
+        self.assertNotEqual({}, self.control._contracts)
+        self.control.clean()
+        self.assertEqual(self.control._contracts, {})
+
     def test_control_content_evaluation(self):
         control = Control(engine=DB)
         contract = Contract(domain='mydomain')

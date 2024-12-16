@@ -66,6 +66,7 @@ class Conditions(object):
         condition = self.__eval(self.__at)
         if not condition: # time to go to db
             return self.__ctrl.select(self.__on, self.__to, self.__at)
+        return condition
     
     @property
     def control(self):
@@ -87,6 +88,7 @@ class Conditions(object):
 class Control(object):
     def __init__(self, engine: str):
         self._contracts = {}  # ['post:@:/v1/customers/:id', 'get:@:/v1/customers/id']
+        self.__engine = engine
         Path('.pidentity').mkdir(exist_ok=True)
         self.__db = connect(f'.pidentity/{engine}.db')
         self._unsaved = []
@@ -117,13 +119,16 @@ class Control(object):
         except: pass
         finally: cursor.close(); cursor.connection.commit()
 
-    def select(self, on: str, to: str, at: str):
+    def select(self, on: str, to: str, at: str, domain = '*'):
         cursor = self.cursor
         condition = ''
-        try:  condition = cursor.execute(SELECT_CONDITIONS_SQL, {ON: on, TO: to, AT: at}).fetchone()
+        try:  condition = cursor.execute(SELECT_CONDITIONS_SQL, {ON: on, TO: to, AT: at, DOMAIN: domain}).fetchone()
         except: pass
         finally: cursor.close()
 
+        print('*' * 40)
+        print(condition)
+        print('*' * 40)
         if condition: return loads(condition[0])
 
     def __sync(self, database: str, values: list):
@@ -160,6 +165,13 @@ class Control(object):
         self.__save()
         return self
 
+    def clean(self):
+        self._contracts = {}  # ['post:@:/v1/customers/:id', 'get:@:/v1/customers/id']
+        self.__db = connect(f'.pidentity/{self.__engine}.db')
+        self._unsaved = []
+        self._unswapped = []
+        return self
+
     @property
     def condition(self):
         return Condition(self)
@@ -189,10 +201,10 @@ class Control(object):
         finally: cursor.close()
         return self
     
-    def nuke(self, engine: str):
-        base = f'{PIDENTITY}/{engine}.db'
+    def nuke(self, engine: str = None):
+        _engine = engine or self.__engine
+        base = f'{PIDENTITY}/{_engine}.db'
         if(Path(base).exists()): Path.unlink(base)
-        print(base); print(Path(base).exists())
 
     def on(self, action: str) -> Conditions:
         c = Conditions(self)
@@ -229,13 +241,14 @@ class Control(object):
         self.__swap()
         return self
 
-    def sync(self, engine: str) -> bool:
+    def sync(self, engine: str = None) -> bool:
         """Read engine in .pidentity/{engine}.json and replace .pidentity/{engine}.db with the contents"""
+        _engine = engine or self.__engine
         Path('.pidentity').mkdir(exist_ok=True)
-        database = f'{PIDENTITY}/{engine}.db'
+        database = f'{PIDENTITY}/{_engine}.db'
         json_string = ''
         try:
-            f = open(f'{PIDENTITY}/{engine}.json')
+            f = open(f'{PIDENTITY}/{_engine}.json')
             json_string = f.read()
             f.close()
         except: return False
