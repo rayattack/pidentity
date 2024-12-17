@@ -2,7 +2,8 @@ import os
 from pathlib import Path
 from unittest import TestCase
 
-from pidentity import Contract, Control, Controller, Conditions
+from pidentity import Contract, Control, Controller
+from pidentity.conditions import Conditions
 from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, ON, TO, AT
 
 

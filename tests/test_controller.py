@@ -11,7 +11,7 @@ DB = 'pidentity'
 
 class ConditionsTest(TestCase):
     def setUp(self) -> None:
-        self.control = Control('conditions')
+        self.control = Control(DB)
         self.control.inits()
         self.control.add(Contract().on('yimu').to('pidentity').contact({'username': 'tersoo'}))
         self.control.add(Contract().on('gossip').to('cia').content({'owner': '$contact.username'}))
@@ -54,4 +54,7 @@ class ConditionsTest(TestCase):
         can = self.control.on('gossip').to('cia').start()
         yes = can.contact({'username': 'snowden'}).content({'owner': 'snowden'}).go()
         self.assertTrue(yes)
+
+    def test_eval_btw(self):
+        ctrl = Control(DB)
 
