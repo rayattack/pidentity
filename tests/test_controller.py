@@ -34,3 +34,8 @@ class ConditionsTest(TestCase):
         self.assertIsNotNone(data)
         self.assertEqual({'&unlocked:==': True}, data)
 
+    def test_no_go_errors(self):
+        controller = self.control.on('foo').to('bar').start()
+        value = controller.content({}).contact({}).context({}).go()
+        self.assertFalse(value)
+

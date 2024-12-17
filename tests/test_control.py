@@ -19,10 +19,6 @@ class ControlTest(TestCase):
         control = Control(engine=DB)
         self.assertEqual(control._contracts, {})
 
-    def test_control_up(self):
-        controller = self.control.up()
-        self.assertIsInstance(controller, Controller)
-
     def test_control_init(self):
         self.control.inits()
 

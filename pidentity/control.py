@@ -14,7 +14,7 @@ from pidentity.database import (
     SQL
 )
 from pidentity.guard import Guard
-from pidentity.macros import Operation
+from pidentity.macros import Operation, OPERATIONS
 
 
 ON_REQUIRED = 'Every contract must have a valid action and destination before being added to a control'
@@ -22,8 +22,9 @@ ON_REQUIRED = 'Every contract must have a valid action and destination before be
 
 
 class Controller(object):
-    def __init__(self, control):
-        self.__ctrl = control
+    def __init__(self, conditions):
+        self.__ctrl = conditions.control
+        self.__conditions = conditions
         self.__content = None
         self.__contact = None
         self.__context = None
@@ -114,6 +115,10 @@ class Controller(object):
 class Conditions(object):
     def __init__(self, ctrl: 'Control'):
         self.__ctrl = ctrl
+        self.__at = ''
+        self.__on = ''
+        self.__to = ''
+        self.__store = {}
 
     def __eval(self, what: str):
         contracts = self.__ctrl._contracts
@@ -141,6 +146,14 @@ class Conditions(object):
         if not condition: # time to go to db
             return self.__ctrl.select(self.__on, self.__to, self.__at)
         return condition
+
+    def sync(self):
+        """This syncs all content, contact, context into memory for evaluation"""
+        for c in ['content', 'context', 'contact']:
+            self.__at = c
+            data = self.scan()
+            self.__store[c] = data
+        return self
     
     @property
     def control(self):
@@ -148,15 +161,24 @@ class Conditions(object):
 
     @property
     def contact(self):
+        cached = self.__store.get('contact')
+        if cached: return cached
         return self.__eval(CONTACT)
 
     @property
     def content(self):
+        cached = self.__store.get('content')
+        if cached: return cached
         return self.__eval(CONTENT)
 
     @property
     def context(self):
+        cached = self.__store.get('context')
+        if cached: return cached
         return self.__eval(CONTEXT)
+
+    def start(self):
+        return Controller(self)
 
 
 class Control(object):
@@ -199,18 +221,14 @@ class Control(object):
         try:  condition = cursor.execute(SELECT_CONDITIONS_SQL, {ON: on, TO: to, AT: at, DOMAIN: domain}).fetchone()
         except: pass
         finally: cursor.close()
-
-        print('*' * 40)
-        print(condition)
-        print('*' * 40)
         if condition: return loads(condition[0])
 
     def __sync(self, database: str, values: list):
+        # TODO: this should be unsync not sync
         # if db file exists - nuke it
         if path.exists(database): nuke(database)
         self.__db = connect(database)
         self.inits()
-        print(values)
         self.__db.cursor().executemany(INSERT_CONDITIONS_SQL, values)
         return True
 
@@ -337,7 +355,4 @@ class Control(object):
         saved = self.__saved
         self.__saved = []
         return saved
-
-    def up(self) -> Controller:
-        return Controller(self)
 
