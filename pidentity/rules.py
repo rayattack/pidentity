@@ -30,3 +30,4 @@ class Rule(object):
         return self._payload.get('val')
     
     def evaluate(self):...
+

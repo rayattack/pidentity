@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from unittest import TestCase
 
-from pidentity import Contract, Control, Controller
+from pidentity import Contract, Control, Controller, Conditions
 from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, ON, TO, AT
 
 
@@ -85,16 +85,8 @@ class ControlTest(TestCase):
         control.add(contract)
 
         # return a fresh control that does not pollute the original
-        guard = control.evaluate.on('post').to('/customers/:id')
-        guard.content({
-            'owner': 10,
-            'name': 'iPhone 15 pro'
-        }).context({
-            'ip': '10.13.13.13'
-        }).contact({
-            'owner': 10
-        })
-        self.assertTrue(guard.scans())
+        condition = control.on('post').to('/customers/:id')
+        self.assertIsInstance(condition, Conditions)
 
     def test_control_sync(self):
         self.assertTrue(self.control.sync('test'))

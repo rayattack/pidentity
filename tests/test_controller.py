@@ -43,15 +43,15 @@ class ConditionsTest(TestCase):
 
     def test_eval_contact(self):
         can = self.control.on('yimu').to('pidentity').start()
-        value = can.contact({'username': 'tersoo'}).go()
-        self.assertTrue(value)
+        yes = can.contact({'username': 'tersoo'}).go()
+        self.assertTrue(yes)
 
         controller = self.control.on('yimu').to('pidentity').start()
-        value = controller.contact({'username': 'ladi'}).go()
-        self.assertFalse(value)
+        no = controller.contact({'username': 'ladi'}).go()
+        self.assertFalse(no)
 
     def test_eval_reference(self):
         can = self.control.on('gossip').to('cia').start()
-        value = can.contact({'username': 'snowden'}).content({'owner': 'snowden'}).go()
-        self.assertTrue(value)
+        yes = can.contact({'username': 'snowden'}).content({'owner': 'snowden'}).go()
+        self.assertTrue(yes)
 

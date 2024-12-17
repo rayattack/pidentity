@@ -13,7 +13,6 @@ from pidentity.database import (
     SELECT_CONDITIONS_SQL,
     SQL
 )
-from pidentity.guard import Guard
 from pidentity.macros import Operation, OPERATIONS
 
 
@@ -28,6 +27,8 @@ class Controller(object):
         self.__stores = {}  # determine on which to keep and which to throw away
 
     def __extract(self, pathway):
+        print('We saw ourself here in the field: ', pathway)
+        print('*' * 50)
         pathways = pathway.split('.')
         data = self.__stores
         for part in pathways:
@@ -43,7 +44,7 @@ class Controller(object):
     def __parse_rule_value(self, field):
         prefix = field.split('.')[0]
         if prefix in ['$content', '$context', '$contact']:
-            return prefix, None
+            return field, None
         return None, field
 
     def content(self, values: dict):
