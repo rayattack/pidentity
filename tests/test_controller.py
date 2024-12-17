@@ -13,6 +13,8 @@ class ConditionsTest(TestCase):
     def setUp(self) -> None:
         self.control = Control('conditions')
         self.control.inits()
+        self.control.add(Contract().on('yimu').to('pidentity').contact({'username': 'tersoo'}))
+        self.control.add(Contract().on('gossip').to('cia').content({'owner': '$contact.username'}))
         self.conditions = Conditions(self.control)
         return super().setUp()
 
@@ -35,7 +37,21 @@ class ConditionsTest(TestCase):
         self.assertEqual({'&unlocked:==': True}, data)
 
     def test_no_go_errors(self):
-        controller = self.control.on('foo').to('bar').start()
-        value = controller.content({}).contact({}).context({}).go()
+        can = self.control.on('foo').to('bar').start()
+        value = can.content({}).contact({}).context({}).go()
         self.assertFalse(value)
+
+    def test_eval_contact(self):
+        can = self.control.on('yimu').to('pidentity').start()
+        value = can.contact({'username': 'tersoo'}).go()
+        self.assertTrue(value)
+
+        controller = self.control.on('yimu').to('pidentity').start()
+        value = controller.contact({'username': 'ladi'}).go()
+        self.assertFalse(value)
+
+    def test_eval_reference(self):
+        can = self.control.on('gossip').to('cia').start()
+        value = can.contact({'username': 'snowden'}).content({'owner': 'snowden'}).go()
+        self.assertTrue(value)
 

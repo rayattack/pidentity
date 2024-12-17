@@ -25,9 +25,14 @@ class Controller(object):
     def __init__(self, conditions):
         self.__ctrl = conditions.control
         self.__conditions = conditions
-        self.__content = None
-        self.__contact = None
-        self.__context = None
+        self.__stores = {}  # determine on which to keep and which to throw away
+
+    def __extract(self, pathway):
+        pathways = pathway.split('.')
+        data = self.__stores
+        for part in pathways:
+            data = data.get(part)
+        return data
 
     def __parse_rule_key(self, key):
         logic = key[0]
@@ -38,21 +43,18 @@ class Controller(object):
     def __parse_rule_value(self, field):
         prefix = field.split('.')[0]
         if prefix in ['$content', '$context', '$contact']:
-            return prefix, self.__stores.get(prefix)
+            return prefix, None
         return None, field
 
     def content(self, values: dict):
-        self.__content = values
         self.__stores['$content'] = values
         return self
 
     def context(self, values: dict):
-        self.__context = values
         self.__stores['$context'] = values
         return self
 
     def contact(self, values: dict):
-        self.__contact = values
         self.__stores['$contact'] = values
         return self
 
@@ -82,32 +84,37 @@ class Controller(object):
             ':': lambda k: 
         }
         """
-        for key, value in enumerate(rules):
+        for key, value in rules.items():
             # logic = & || or, field = key i.e. id, operator = Operator() instance
-            logic, field, operator = self.__parse_rule_key(key)
+            logic, field, operation = self.__parse_rule_key(key)
 
             # reference == $lookup path or None, datum is the actual data or the $store i.e. context, content etc if reference is True
             # if actual value we keep it to be used in comparison operation
             # if it is a reference then get the actual value to be used in comparison operation
             reference, value_in_rules = self.__parse_rule_value(value)
-            if reference: value_in_rules = _extract(reference, datum)
+            if reference: value_in_rules = self.__extract(reference)
                     
             # check if the field passes validation for the commensurate rules
             value_in_data = data.get(field)
-            if (not value_in_data) and (logia == '&'): return False
-            if (not operation(value_in_rules, value_in_data)) and (logia == '&'): return False
+            if (not value_in_data) and (logic == '&'): return False
+            if (not operation(value_in_rules, value_in_data)) and (logic == '&'): return False
         return True
     
     def go(self) -> bool:
         conditions, good = [], []
-        # get the condition from the control (db) if necessary
-        conditions.append(self.__ctrl.select)
-        for o in [self.__context, self.__content, self.__context]:
-            if(o): conditions.append(self.__ctrl.select(o.on, o.to, o.at, o.domain))
+        that = self.__conditions
+        for o in ['$content', '$context', '$contact']:
+            data = self.__stores.get(o)
+            if(data):
+                # get the rules / conditions from memory or storage and log it
+                rules = {'$content': that.content, '$context': that.context, '$contact': that.contact}.get(o)
+                if not rules: continue
+                conditions.append((rules, data))
 
         if not conditions: return False
         for condition in conditions:
-            good.append(self.evaluator(conditions[0], conditions[1]))
+            rules, data = condition
+            good.append(self.evaluator(rules = rules, data = data))
 
         return all(good)
 
