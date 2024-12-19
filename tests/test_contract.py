@@ -90,7 +90,7 @@ class ContractTest(TestCase):
             '&name:==': 'John Doe',
             '&age:==': 18,
             '&location@==': 'context.location',
-            '&reference@??': 'contact.id',
+            '&reference@[]': 'contact.id',
             '&address:::': {
                 '&city:==': 'New York',
                 '&state:==': 'NY',

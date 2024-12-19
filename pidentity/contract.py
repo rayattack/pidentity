@@ -3,7 +3,7 @@ from pidentity.database import SELECT_CONDITIONS_SQL
 from pidentity.operators import EQ
 from pidentity.rules import Ref, Rule
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 if TYPE_CHECKING: from pidentity.control import Control
 
 
@@ -14,6 +14,7 @@ class Contract(object):
     contract is retrieved from the chosen data store.
     """
     def __init__(self, domain: str = '*'):
+        self._metadata = {}
         self._on = []  # iterate over this and repeat _payload with each as 'on' value
         self._payload = {
             'on': '',  # will be saved as single action with to, contact, content, context etc. copied to each action
@@ -107,6 +108,11 @@ class Contract(object):
 
     def content(self, content: dict):
         self._payload[CONTENT] = Contract.prepare(content)
+        return self
+
+    def metadata(self, metadata: dict = None) -> "Contract | Dict":
+        if not metadata: return self._metadata
+        self._metadata = metadata
         return self
 
     def this(self, key: str):

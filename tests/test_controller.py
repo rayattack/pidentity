@@ -26,7 +26,12 @@ class ConditionsTest(TestCase):
         control.add(Contract().on('foo').to('bar').content({'unlocked': True}))
         control.add(Contract().on('baz').to('yan').content({'unlocked': False}))
 
-        rows = control.cursor.execute(f"select * from conditions where {TO} = 'yan' and what = 'content'").fetchall()
+        cursor = control.cursor
+        rows = cursor.execute(f"""
+            select * from conditions
+                where {ON} = 'baz' and {TO} = 'yan' and what = 'content' and domain = '*'
+            """).fetchall()
+        cursor.close()
         self.assertEqual(len(rows), 1)
 
         result = control.select('baz', 'yan', 'content')

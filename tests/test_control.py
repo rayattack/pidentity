@@ -21,10 +21,10 @@ class ControlTest(TestCase):
         self.assertEqual(control._contracts, {})
 
     def test_control_init(self):
-        self.control.inits()
+        self.assertTrue(Path(f'.pidentity/{DB}.db').exists())
 
     def test_control_add(self):
-        control = Control(engine=DB)
+        control = self.control
         contract = Contract(domain='mydomain')
         contract.on('post').to('/customers/:id')
         control.add(contract)
@@ -39,7 +39,8 @@ class ControlTest(TestCase):
                 TO: '/customers/:id',
                 AT: v,
                 DOMAIN: 'mydomain',
-                'condition': '{}'
+                'condition': '{}',
+                'metadata': {}
             })
         self.assertListEqual([], control.saved)
 
@@ -50,7 +51,7 @@ class ControlTest(TestCase):
 
     def test_control_drop(self):
         _sql = f"select * from conditions where {TO} = '/orders/:id/line-items'"
-        control = Control(engine=DB)
+        control = self.control
         contract = Contract()
         control.add(
         contract.upon('post', 'get', 'put', 'delete', 'patch').unto('/orders/:id/line-items'))
@@ -79,7 +80,7 @@ class ControlTest(TestCase):
         self.assertEqual(self.control._contracts, {})
 
     def test_control_content_evaluation(self):
-        control = Control(engine=DB)
+        control = self.control
         contract = Contract(domain='mydomain')
         contract.on('post').to('/customers/:id')
         contract.content({'owner': contract.this('contact.owner')})
@@ -92,7 +93,6 @@ class ControlTest(TestCase):
     def test_control_sync(self):
         self.assertTrue(self.control.sync('test'))
         self.assertTrue(Path('.pidentity/test.json').exists())
-        self.assertTrue(Path('.pidentity/test.db').exists())
 
         cursor = self.control.cursor
         rows = cursor.execute("select * from conditions where unto = 'uu7483-eea3a-akdje283-adkea'").fetchall()
@@ -109,7 +109,7 @@ class ControlTest(TestCase):
         self.assertFalse(Path('.pidentity/bandana.db').exists())
 
     def test_control_swap(self):
-        ctrl = Control('swapper').inits()
+        ctrl = self.control
         ctrl.add(Contract().on('foo').to('10001').contact({"identifier": 10001}))
         ctrl.add(Contract().on('bar').to('10001').content({"unlocked": True}))
         contract = ctrl._contracts.get('foo:10001')

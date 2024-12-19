@@ -17,12 +17,15 @@ from pidentity.database import (
 ON_REQUIRED = 'Every contract must have a valid action and destination before being added to a control'
 
 
+def CONNECT_SQLITE(dbfile: str, timeout = 3):
+    return connect(dbfile, isolation_level = None)
+
+
 class Control(object):
     def __init__(self, engine: str = 'hashmap'):
+        self.__db = None
         self._contracts = {}  # ['post:@:/v1/customers/:id', 'get:@:/v1/customers/id']
         self.__engine = engine
-        Path('.pidentity').mkdir(exist_ok=True)
-        self.__db = connect(f'.pidentity/{engine}.db')
         self._unsaved = []
         self._unswapped = []
 
@@ -44,12 +47,14 @@ class Control(object):
 
         self.__saved = self._unsaved
         self._unsaved = []
+        return self
     
     def __swap(self) -> 'Control':
         cursor = self.cursor
         try: cursor.executemany(UPDATE_CONDITIONS_SQL, self._unswapped)
         except: pass
         finally: cursor.close(); cursor.connection.commit()
+        return self
 
     def select(self, on: str, to: str, at: str, domain = '*'):
         cursor = self.cursor
@@ -62,14 +67,12 @@ class Control(object):
     def load(self, folder: str, ext = '.json'):
         return self
 
-    def __sync(self, database: str, values: list):
+    def __sync(self, values: list):
         # TODO: this should be unsync not sync
         # if db file exists - nuke it
-        if path.exists(database): nuke(database)
-        self.__db = connect(database)
-        self.inits()
-        self.__db.cursor().executemany(INSERT_CONDITIONS_SQL, values)
-        return True
+        if not self.__db: raise ValueError('Database not yet initialised')
+        cursor = self.__db.cursor()
+        cursor.executemany(INSERT_CONDITIONS_SQL, values)
 
     @property
     def cursor(self) -> Cursor:
@@ -91,14 +94,15 @@ class Control(object):
                     TO: payload['to'],
                     AT: k,
                     DOMAIN: payload[DOMAIN],
-                    'condition': condition
+                    'condition': condition,
+                    'metadata': contract.metadata()
                 } for k, condition in [_xtract(CONTACT, payload), _xtract(CONTENT, payload), _xtract(CONTEXT, payload)]]
         self.__save()
         return self
 
     def clean(self):
         self._contracts = {}  # ['post:@:/v1/customers/:id', 'get:@:/v1/customers/id']
-        self.__db = connect(f'.pidentity/{self.__engine}.db')
+        self.__db = CONNECT_SQLITE(f'.pidentity/{self.__engine}.db', timeout = 3)
         self._unsaved = []
         self._unswapped = []
         return self
@@ -117,25 +121,27 @@ class Control(object):
                 vals.extend(data)
         self.cursor.executemany(DELETE_CONDITIONS_SQL, vals)
 
-    @property
-    def evaluate(self) -> 'Guard':
-        """
-        If someone tries to evaluate with a can and to and a
-        valid contract does not exist then raise an error
-        """
-        return Guard(self)
-
-    def inits(self) -> 'Control':
-        cursor = self.cursor
+    def inits(self, config = None) -> 'Control':
+        """Read engine in .pidentity/{engine}.json and replace .pidentity/{engine}.db with the contents"""
+        Path('.pidentity').mkdir(exist_ok=True)
+        way = f'.pidentity/{self.__engine}.db'
+        if Path(way).exists():
+            self.__db = CONNECT_SQLITE(way)
+            return self
+        self.__db = CONNECT_SQLITE(way, timeout = 3)
+        cursor = self.__db.cursor()
         try: cursor.executescript(SQL)
         except: pass
         finally: cursor.close()
+        if config:
+            self.sync(config)
         return self
     
-    def nuke(self, engine: str = None):
+    def nuke(self, engine: str = ''):
         _engine = engine or self.__engine
         base = f'{PIDENTITY}/{_engine}.db'
-        if(Path(base).exists()): Path.unlink(base)
+        _base = Path(base)
+        if(_base.exists()): _base.unlink(missing_ok = True)
 
     def on(self, action: str) -> Conditions:
         c = Conditions(self)
@@ -169,22 +175,14 @@ class Control(object):
         self.__swap()
         return self
 
-    def sync(self, engine: str = None) -> bool:
-        """Read engine in .pidentity/{engine}.json and replace .pidentity/{engine}.db with the contents"""
-        _engine = engine or self.__engine
-        Path('.pidentity').mkdir(exist_ok=True)
-        database = f'{PIDENTITY}/{_engine}.db'
+    def sync(self, config: str = None) -> bool:
         json_string = ''
-        try:
-            f = open(f'{PIDENTITY}/{_engine}.json')
+        with open(f'{PIDENTITY}/{config}.json') as f:
             json_string = f.read()
-            f.close()
-        except: return False
-
         json_data = loads(json_string)
-        for data in json_data:
-            data['condition'] = dumps(data.get('condition', {}))
-        return self.__sync(database, json_data)
+        for data in json_data: data['condition'] = dumps(data.get('condition', {}))
+        self.__sync(json_data)
+        return True
 
     @property
     def saved(self):
