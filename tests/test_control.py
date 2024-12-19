@@ -40,7 +40,7 @@ class ControlTest(TestCase):
                 AT: v,
                 DOMAIN: 'mydomain',
                 'condition': '{}',
-                'metadata': {}
+                'metadata': '{}'
             })
         self.assertListEqual([], control.saved)
 

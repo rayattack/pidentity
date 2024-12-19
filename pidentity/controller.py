@@ -9,8 +9,6 @@ class Controller(object):
         self.__stores = {}  # determine on which to keep and which to throw away
 
     def __extract(self, pathway):
-        print('We saw ourself here in the field: ', pathway)
-        print('*' * 50)
         pathways = pathway.split('.')
         data = self.__stores
         for part in pathways:
@@ -20,10 +18,11 @@ class Controller(object):
     def __parse_rule_key(self, key):
         logic = key[0]
         field = key[1:-3]
-        op = OPERATIONS.get(key[-3:])
+        op = OPERATIONS.get(key[-3:]) or OPERATIONS.get(':==')
         return logic, field, op
 
     def __parse_rule_value(self, field):
+        if not isinstance(field, str): return None, field
         prefix = field.split('.')[0]
         if prefix in ['$content', '$context', '$contact']:
             return field, None
@@ -100,5 +99,4 @@ class Controller(object):
             good.append(self.evaluator(rules = rules, data = data))
 
         return all(good)
-
 

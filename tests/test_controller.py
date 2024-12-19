@@ -3,6 +3,7 @@ from pathlib import Path
 from unittest import TestCase
 
 from pidentity import Contract, Control, Conditions
+from pidentity.operators import IN
 from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, ON, TO, AT
 
 
@@ -38,6 +39,7 @@ class ConditionsTest(TestCase):
         self.assertIsNotNone(result)
 
         data = control.clean().on('foo').to('bar').at('content').scan()
+        print(control._contracts)
         self.assertIsNotNone(data)
         self.assertEqual({'&unlocked:==': True}, data)
 
@@ -62,4 +64,15 @@ class ConditionsTest(TestCase):
 
     def test_eval_btw(self):
         ctrl = Control(DB)
+
+    def test_logical_comparisons(self):
+        self.control.add(Contract().on('boo').to('haters').content({
+            '&user': '$contact.id',
+            '?location': IN(['sweden', 'portugal'])
+        }))
+        can = self.control.on('boo').to('haters').start()
+        no = can.content({'user': 40, 'location': 'swede'}).contact({'id': 44}).go()
+        yes = can.content({'user': 40, 'location': 'swede'}).contact({'id': 40}).go()
+        self.assertTrue(yes)
+        self.assertFalse(no)
 

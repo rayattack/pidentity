@@ -8,6 +8,7 @@ from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, PIDENTITY, ON
 from pidentity.database import (
     DELETE_CONDITIONS_SQL,
     INSERT_CONDITIONS_SQL,
+    UPSERT_CONDITIONS_SQL,
     UPDATE_CONDITIONS_SQL,
     SELECT_CONDITIONS_SQL,
     SQL
@@ -39,8 +40,8 @@ class Control(object):
 
     def __save(self) -> 'Control':
         cursor = self.cursor
-        try: cursor.executemany(INSERT_CONDITIONS_SQL, self._unsaved)
-        except: pass
+        try: cursor.executemany(UPSERT_CONDITIONS_SQL, self._unsaved)
+        except IndexError: pass
         finally:
             cursor.close()
             cursor.connection.commit()
@@ -95,7 +96,7 @@ class Control(object):
                     AT: k,
                     DOMAIN: payload[DOMAIN],
                     'condition': condition,
-                    'metadata': contract.metadata()
+                    'metadata': dumps(contract.metadata())
                 } for k, condition in [_xtract(CONTACT, payload), _xtract(CONTENT, payload), _xtract(CONTEXT, payload)]]
         self.__save()
         return self
@@ -180,7 +181,9 @@ class Control(object):
         with open(f'{PIDENTITY}/{config}.json') as f:
             json_string = f.read()
         json_data = loads(json_string)
-        for data in json_data: data['condition'] = dumps(data.get('condition', {}))
+        for data in json_data:
+            data['condition'] = dumps(data.get('condition', {}))
+            data['metadata'] = dumps(data.get('metadata', {}))
         self.__sync(json_data)
         return True
 
