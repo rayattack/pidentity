@@ -9,14 +9,14 @@
       
       
       
-        <link rel="prev" href="../control/">
+        <link rel="prev" href="../access/">
       
       
-        <link rel="next" href="../persistence/">
+        <link rel="next" href="../content/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.0253249f.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.6f8fc17f.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -275,7 +275,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../control/" class="md-nav__link">
+      <a href="../access/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -366,27 +366,96 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Content Based Control">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#contact" class="md-nav__link">
-    <span class="md-ellipsis">
-      Contact
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
     </ul>
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../content/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Content
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contacts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contacts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guard.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guard
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../control/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Control(ler)
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -558,21 +627,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Content Based Control">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#contact" class="md-nav__link">
-    <span class="md-ellipsis">
-      Contact
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
     </ul>
@@ -621,7 +675,7 @@ whenever the <code>control: pidentity.Control</code> object is asked to evaluate
 </div>
 <h3 id="rules-conditions">Rules &amp; Conditions</h3>
 <p>Great, now we know how to build a contract and tell it what actions and content it identifies. But a contract is useless if we have no way of specifying the
-<code>content</code>, <code>contract</code>, and <code>context</code> conditions for which the contract is valid.</p>
+<code>content</code>, <code>contact</code>, and <code>context</code> conditions for which the contract is valid.</p>
 <h3 id="content-based-control">Content Based Control</h3>
 <p>If you want to control access to content based on the data in the content itself - you tell your contract this by using the <code>.content(conditions: dict)</code> method
 of the <code>contract</code> object. It is important to note that by default <strong><code>pidentity denies all access unless a contract is found</code></strong>.</p>
@@ -693,47 +747,6 @@ To specify <code>OR</code> combinations the keys must use the explicit symbol no
 </span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="s1">&#39;?unlocked&#39;</span><span class="p">:</span> <span class="kc">True</span>
 </span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="p">})</span>
 </span></code></pre></div>
-<p><div class="highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span> <span class="nn">pidentity</span> <span class="kn">import</span> <span class="n">Controls</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="o">...</span> <span class="c1"># code from previous block here</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">controls</span> <span class="o">=</span> <span class="n">Controls</span><span class="p">()</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="n">controls</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-</span></code></pre></div>
-These contracts are loaded in memory and for test use cases that is fine, but to make the most of pidentity you might want to connect a storage engine
-like a database for contracts to be saved and retrieved easily.</p>
-<p>Currently only redis, postgres, sql server, oracle db, and mysql is supported as a storage engine.</p>
-<div class="highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span> <span class="nn">pidentity</span> <span class="kn">import</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">Controls</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">controls</span> <span class="o">=</span> <span class="n">Controls</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="s1">&#39;postgres&#39;</span><span class="p">,</span> <span class="n">dsn</span><span class="o">=...</span><span class="p">)</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">contract</span> <span class="o">=</span> <span class="n">Contract</span><span class="p">()</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="n">contract</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s1">&#39;patches&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;/customers/:id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span><span class="p">({</span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="s1">&#39;cidr&#39;</span><span class="p">:</span> <span class="s1">&#39;10.0.0.0/24&#39;</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="p">})</span>
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="c1"># contracts above are added in-memory but not saved, to persist contracts?</span>
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="k">await</span> <span class="n">controls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
-</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="c1"># for synchronous use cases use save sync</span>
-</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="n">controls</span><span class="o">.</span><span class="n">saves</span><span class="p">()</span>
-</span></code></pre></div>
-<div class="highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># now we can provide some context, content, and contact rules/conditions we</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="c1"># want to combine with the possible actions specified above</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">c</span><span class="o">.</span><span class="n">context</span><span class="p">({})</span>  <span class="c1"># let&#39;s use an empty dict for now - this will allow everyone but it&#39;s good enough for now</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">c</span><span class="o">.</span><span class="n">content</span><span class="p">({})</span>  <span class="c1"># empty dict for now</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">c</span><span class="o">.</span><span class="n">contact</span><span class="p">({})</span>  <span class="c1"># empty dict for now</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
-</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="c1"># finally let&#39;s add this contract to our controls for saving so it can be used later</span>
-</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1"># await protocol.add_contract(c) also possible</span>
-</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="n">protocol</span><span class="o">.</span><span class="n">add_contract_sync</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-</span></code></pre></div>
-<h4 id="contact">Contact</h4>
-<p>This is recorded personal identifying information that can be used to identify a persona (app, human etc). Contact blocks are how you tell pidentity to
-target personas. As usual - let's look at some code.</p>
-<div class="highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>
-</span></code></pre></div>
 
 
 
@@ -763,7 +776,7 @@ target personas. As usual - let's look at some code.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../control/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Access Control">
+          <a href="../access/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Access Control">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -780,13 +793,13 @@ target personas. As usual - let's look at some code.</p>
         
         
           
-          <a href="../persistence/" class="md-footer__link md-footer__link--next" aria-label="Next: Persistence">
+          <a href="../content/" class="md-footer__link md-footer__link--next" aria-label="Next: Content">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Persistence
+                Content
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -825,7 +838,7 @@ target personas. As usual - let's look at some code.</p>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.footer"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="../assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
     
   </body>

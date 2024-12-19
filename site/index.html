@@ -10,11 +10,11 @@
       
       
       
-        <link rel="next" href="control/">
+        <link rel="next" href="access/">
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.0253249f.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.6f8fc17f.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#start-here" class="md-skip">
+        <a href="#pidentity-authorization-simplified" class="md-skip">
           Skip to content
         </a>
       
@@ -331,7 +331,7 @@
   
   
     <li class="md-nav__item">
-      <a href="control/" class="md-nav__link">
+      <a href="access/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -357,6 +357,90 @@
   
   <span class="md-ellipsis">
     Contracts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="content/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Content
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="contacts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contacts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guard.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guard
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="control/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Control(ler)
   </span>
   
 
@@ -540,32 +624,32 @@
                   
 
 
-<h1 id="start-here">Start Here</h1>
+<h1 id="pidentity-authorization-simplified">Pidentity : Authorization Simplified</h1>
 <p>pidentity is an authorization and access control library built to provide simple yet robust ABAC paradigms. (<strong>NOTE: pidentity does not use ABAC XACML or ABAC conventions</strong>) - it
 uses an insanely simpler paradigm to solve the same problem.</p>
 <h2 id="the-pidentity-paradigm">The pidentity Paradigm</h2>
-<p>pidentity works via its own custom <code>pidentity Paradigm</code> which translates to <strong><code>Control Content from Contact via Contracts Contextually</code></strong>. Sounds intimidating but it is really simple once broken down.</p>
+<p>pidentity works via its own custom <code>C5 Paradigm</code> which translates to <strong><code>Control Content from Contact via Contracts Contextually</code></strong>. Sounds intimidating but it is really simple once broken down.</p>
 <p>Every information system has:</p>
 <ul>
 <li>
-<p>Content: this is the data you might want to protect i.e. data stored in the system or system(s)</p>
+<p><strong>Content</strong>: this is the data you might want to protect i.e. data stored in the system or system(s)</p>
 </li>
 <li>
-<p>Contact: Entities that want to come in contact with the data (owner of the data, someone granted access by owner, hacker, application) etc.</p>
+<p><strong>Contact</strong>: Entities that want to come in contact with the data (owner of the data, someone granted access by owner, hacker, application) etc.</p>
 </li>
 <li>
-<p>Context: Information outside the data i.e. dates or times when no one is allowed to update content, ip address of a machine on the network, user browser etc.</p>
+<p><strong>Context</strong>: Information outside the data i.e. dates or times when no one is allowed to update content, ip address of a machine on the network, user browser etc.</p>
 </li>
 <li>
-<p>Contract: What is a legal or illegal operation when Content, Contact, Context is combined together</p>
+<p><strong>Contract</strong>: What is a legal or illegal operation when Content, Contact, Context is combined together</p>
 </li>
 <li>
-<p>Controls: The system, processes, tools etc. that deny or allows operations <em>to</em> and <em>on</em> content.</p>
+<p><strong>Control</strong>: The system, processes, tools etc. that deny or allows operations <em>to</em> and <em>on</em> content.</p>
 </li>
 </ul>
 <div class="admonition info">
 <p class="admonition-title">So how does this all relate to the <strong>pidentity</strong> mouthful above?</p>
-<p>You (your application, or organisation) want to <strong>1. Control</strong> (allow, deny access <em>to</em> or limit actions <em>on</em>) <strong>2. Content</strong> (data, information) from <strong>3. Contact</strong> (application, hacker, human)
+<p>You (your application, or organisation) wants to <strong>1. Control</strong> (allow, deny access <em>to</em> or limit actions <em>on</em>) <strong>2. Content</strong> (data, information) from <strong>3. Contact</strong> (application, hacker, human)
 via <strong>4. Contract(s)</strong> (combinatory rules) <strong>5. Contextually</strong> (that might use data not stored within the content being controlled).</p>
 </div>
 <h2 id="installation">Installation</h2>
@@ -604,7 +688,7 @@ via <strong>4. Contract(s)</strong> (combinatory rules) <strong>5. Contextually<
         
         
           
-          <a href="control/" class="md-footer__link md-footer__link--next" aria-label="Next: Access Control">
+          <a href="access/" class="md-footer__link md-footer__link--next" aria-label="Next: Access Control">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
@@ -649,7 +733,7 @@ via <strong>4. Contract(s)</strong> (combinatory rules) <strong>5. Contextually<
     <script id="__config" type="application/json">{"base": ".", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.footer"], "search": "assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
     
   </body>
