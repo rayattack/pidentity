@@ -645,8 +645,8 @@ system via <a href="context.md">Context</a> <code>pidentity.Context</code>, and 
 protect valuable data a.k.a <a href="../content/">Content</a> via the <code>pidentity.Content</code> object.</p>
 <h2 id="pidentitycontrol">pidentity.Control</h2>
 <p>pidentity is all about controlling access to content (data); as such the parent object for all activity is the <code>pidentity.Control</code> object, and this
-object has only 3 responsibilities</p>
-<p>to <strong><code>1. save</code></strong>, <strong><code>2. retrieve</code></strong> (scan), and <strong><code>evaluate</code></strong> contracts. <em>For more, see</em> <a href="../contracts/"><code>pidentity.Contract</code></a>.</p>
+object has only 3 responsibilities
+to <strong><code>1. save</code></strong>, <strong><code>2. retrieve</code></strong> (scan), and <strong><code>3. evaluate</code></strong> contracts. <em>For more, see</em> <a href="../contracts/"><code>pidentity.Contract</code></a>.</p>
 <p><strong>Relationship Flow:</strong></p>
 <p><code>Control</code> -&gt; (saves, retrieves, evaluates) -&gt; <code>Contract(s)</code></p>
 <p><code>Contract(s)</code> -&gt; (use 3 blocks to say what's legal/illegal) -&gt; [<code>Content</code>, <code>Contact</code>, <code>Context</code>].</p>
