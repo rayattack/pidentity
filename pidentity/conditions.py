@@ -2,7 +2,7 @@ from pidentity import Controller
 from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, PIDENTITY, ON, TO, AT
 from pidentity.macros import Operation, OPERATIONS
 
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING: from pidentity.control import Control
 
 
@@ -32,7 +32,7 @@ class Conditions(object):
         self.__at = at
         return self
 
-    def scan(self) -> dict:
+    def scan(self) -> Any | None:
         """This goes to the db if nothing exists in memory"""
         if not (self.__to and self.__at and self.__on):
             raise ValueError('Provide complete condition options to scan')
@@ -73,4 +73,3 @@ class Conditions(object):
 
     def start(self):
         return Controller(self)
-

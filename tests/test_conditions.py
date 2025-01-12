@@ -33,4 +33,3 @@ class ConditionsTest(TestCase):
         data = control.clean().on('foo').to('bar').at('content').scan()
         self.assertIsNotNone(data)
         self.assertEqual({'&unlocked:==': True}, data)
-

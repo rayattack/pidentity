@@ -109,8 +109,8 @@ class Control(object):
         return self
 
     @property
-    def condition(self):
-        return Condition(self)
+    def conditions(self):
+        return Conditions(self)
 
     def drop(self, *contracts: 'Contract'):
         vals = []
@@ -192,4 +192,3 @@ class Control(object):
         saved = self.__saved
         self.__saved = []
         return saved
-
