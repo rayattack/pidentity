@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from json import dumps, loads
 from os import environ, path, remove as nuke
 from pathlib import Path
@@ -22,13 +23,22 @@ def CONNECT_SQLITE(dbfile: str, timeout = 3):
     return connect(dbfile, isolation_level = None)
 
 
-class Control(object):
+class BaseControl(ABC):
     def __init__(self, engine: str = 'hashmap'):
-        self.__db = None
+        self._db = None
         self._contracts = {}  # ['post:@:/v1/customers/:id', 'get:@:/v1/customers/id']
         self.__engine = engine
         self._unsaved = []
         self._unswapped = []
+    
+    @abstractmethod
+    def _save(self): raise NotImplementedError
+
+    @abstractmethod
+    def _swap(self): raise NotImplementedError
+
+    @abstractmethod
+    def _sync(self, values: list): raise NotImplementedError
 
     @staticmethod
     def _evaluate(conditions: dict):
@@ -38,46 +48,15 @@ class Control(object):
             char = key[0]
             {'?': 'OR', '&': 'AND'}.get(char)
 
-    def __save(self) -> 'Control':
-        cursor = self.cursor
-        try: cursor.executemany(UPSERT_CONDITIONS_SQL, self._unsaved)
-        except IndexError: pass
-        finally:
-            cursor.close()
-            cursor.connection.commit()
-
-        self.__saved = self._unsaved
-        self._unsaved = []
-        return self
-    
-    def __swap(self) -> 'Control':
-        cursor = self.cursor
-        try: cursor.executemany(UPDATE_CONDITIONS_SQL, self._unswapped)
-        except: pass
-        finally: cursor.close(); cursor.connection.commit()
-        return self
-
-    def select(self, on: str, to: str, at: str, domain = '*'):
-        cursor = self.cursor
-        condition = ''
-        try:  condition = cursor.execute(SELECT_CONDITIONS_SQL, {ON: on, TO: to, AT: at, DOMAIN: domain}).fetchone()
-        except: pass
-        finally: cursor.close()
-        if condition: return loads(condition[0])
+    @abstractmethod
+    def select(self, on: str, to: str, at: str, domain = '*'):...
 
     def load(self, folder: str, ext = '.json'):
         return self
 
-    def __sync(self, values: list):
-        # TODO: this should be unsync not sync
-        # if db file exists - nuke it
-        if not self.__db: raise ValueError('Database not yet initialised')
-        cursor = self.__db.cursor()
-        cursor.executemany(INSERT_CONDITIONS_SQL, values)
-
     @property
     def cursor(self) -> Cursor:
-        return self.__db.cursor()
+        return self._db.cursor()
 
     def add(self, *contracts: 'Contract') -> 'Control':
         def _xtract(k: str, data: dict):
@@ -98,12 +77,12 @@ class Control(object):
                     'condition': condition,
                     'metadata': dumps(contract.metadata())
                 } for k, condition in [_xtract(CONTACT, payload), _xtract(CONTENT, payload), _xtract(CONTEXT, payload)]]
-        self.__save()
+        self._save()
         return self
 
     def clean(self):
         self._contracts = {}  # ['post:@:/v1/customers/:id', 'get:@:/v1/customers/id']
-        self.__db = CONNECT_SQLITE(f'.pidentity/{self.__engine}.db', timeout = 3)
+        self._db = CONNECT_SQLITE(f'.pidentity/{self.__engine}.db', timeout = 3)
         self._unsaved = []
         self._unswapped = []
         return self
@@ -127,10 +106,10 @@ class Control(object):
         Path('.pidentity').mkdir(exist_ok=True)
         way = f'.pidentity/{self.__engine}.db'
         if Path(way).exists():
-            self.__db = CONNECT_SQLITE(way)
+            self._db = CONNECT_SQLITE(way)
             return self
-        self.__db = CONNECT_SQLITE(way, timeout = 3)
-        cursor = self.__db.cursor()
+        self._db = CONNECT_SQLITE(way, timeout = 3)
+        cursor = self._db.cursor()
         try: cursor.executescript(SQL)
         except: pass
         finally: cursor.close()
@@ -173,7 +152,7 @@ class Control(object):
                     DOMAIN: payload['domain'],
                     'condition': condition
                 } for k, condition in [_xtract(CONTACT, payload), _xtract(CONTENT, payload), _xtract(CONTEXT, payload)]]
-        self.__swap()
+        self._swap()
         return self
 
     def sync(self, config: str = None) -> bool:
@@ -184,11 +163,89 @@ class Control(object):
         for data in json_data:
             data['condition'] = dumps(data.get('condition', {}))
             data['metadata'] = dumps(data.get('metadata', {}))
-        self.__sync(json_data)
+        self._sync(json_data)
         return True
 
     @property
     def saved(self):
-        saved = self.__saved
-        self.__saved = []
+        saved = self._saved
+        self._saved = []
         return saved
+
+
+class Control(BaseControl):
+    def __init__(self, engine = 'hashmap'):
+        super().__init__(engine)
+
+    async def _save(self) -> 'Control':
+        cursor = self.cursor
+        try: cursor.executemany(UPSERT_CONDITIONS_SQL, self._unsaved)
+        except IndexError: pass
+        finally:
+            cursor.close()
+            cursor.connection.commit()
+
+        self._saved = self._unsaved
+        self._unsaved = []
+        return self
+    
+    async def _swap(self) -> 'Control':
+        cursor = self.cursor
+        try: cursor.executemany(UPDATE_CONDITIONS_SQL, self._unswapped)
+        except: pass
+        finally: cursor.close(); cursor.connection.commit()
+        return self
+
+    async def _sync(self, values: list):
+        # TODO: this should be unsync not sync
+        # if db file exists - nuke it
+        if not self._db: raise ValueError('Database not yet initialised')
+        cursor = self._db.cursor()
+        cursor.executemany(INSERT_CONDITIONS_SQL, values)
+
+    async def select(self, on: str, to: str, at: str, domain = '*'):
+        cursor = self.cursor
+        condition = ''
+        try:  condition = cursor.execute(SELECT_CONDITIONS_SQL, {ON: on, TO: to, AT: at, DOMAIN: domain}).fetchone()
+        except: pass
+        finally: cursor.close()
+        if condition: return loads(condition[0])
+
+
+class Controls(BaseControl):
+    def __init__(self, engine = 'hashmap'):
+        super().__init__(engine)
+
+    def _save(self) -> 'Control':
+        cursor = self.cursor
+        try: cursor.executemany(UPSERT_CONDITIONS_SQL, self._unsaved)
+        except IndexError: pass
+        finally:
+            cursor.close()
+            cursor.connection.commit()
+
+        self._saved = self._unsaved
+        self._unsaved = []
+        return self
+
+    def _swap(self) -> 'Control':
+        cursor = self.cursor
+        try: cursor.executemany(UPDATE_CONDITIONS_SQL, self._unswapped)
+        except: pass
+        finally: cursor.close(); cursor.connection.commit()
+        return self
+
+    def _sync(self, values: list):
+        # TODO: this should be unsync not sync
+        # if db file exists - nuke it
+        if not self._db: raise ValueError('Database not yet initialised')
+        cursor = self._db.cursor()
+        cursor.executemany(INSERT_CONDITIONS_SQL, values)
+
+    def select(self, on: str, to: str, at: str, domain = '*'):
+        cursor = self.cursor
+        condition = ''
+        try:  condition = cursor.execute(SELECT_CONDITIONS_SQL, {ON: on, TO: to, AT: at, DOMAIN: domain}).fetchone()
+        except: pass
+        finally: cursor.close()
+        if condition: return loads(condition[0])

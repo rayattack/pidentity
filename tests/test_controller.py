@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from unittest import TestCase
 
-from pidentity import Contract, Control, Conditions
+from pidentity import Contract, Control, Controls, Conditions
 from pidentity.operators import IN
 from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, ON, TO, AT
 
@@ -12,7 +12,7 @@ DB = 'pidentity'
 
 class ConditionsTest(TestCase):
     def setUp(self) -> None:
-        self.control = Control(DB)
+        self.control = Controls(DB)
         self.control.inits()
         self.control.add(Contract().on('yimu').to('pidentity').contact({'username': 'tersoo'}))
         self.control.add(Contract().on('gossip').to('cia').content({'owner': '$contact.username'}))
@@ -63,7 +63,7 @@ class ConditionsTest(TestCase):
         self.assertTrue(yes)
 
     def test_eval_btw(self):
-        ctrl = Control(DB)
+        ctrl = Controls(DB)
 
     def test_logical_comparisons(self):
         self.control.add(Contract().on('boo').to('haters').content({

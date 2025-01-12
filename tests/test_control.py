@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from unittest import TestCase
 
-from pidentity import Contract, Control, Controller
+from pidentity import Contract, Controls, Controller
 from pidentity.conditions import Conditions
 from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, ON, TO, AT
 
@@ -10,14 +10,14 @@ from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, ON, TO, AT
 DB = 'pidentity'
 
 
-class ControlTest(TestCase):
+class ControlsTest(TestCase):
     def setUp(self) -> None:
-        self.control = Control(DB)
+        self.control = Controls(DB)
         self.control.inits()
         return super().setUp()
 
     def test_control_payload_structure(self):
-        control = Control(engine=DB)
+        control = Controls(engine=DB)
         self.assertEqual(control._contracts, {})
 
     def test_control_init(self):
@@ -69,7 +69,7 @@ class ControlTest(TestCase):
 
     def test_control_raises_when_contract_not_activated(self):
         # every contract must call contract.on.to before being added to controls
-        control = Control(engine=DB)
+        control = Controls(engine=DB)
         contract = Contract(domain='mydomain')
         self.assertRaises(ValueError, control.add, contract)
 
@@ -101,7 +101,7 @@ class ControlTest(TestCase):
         self.control.nuke('test')
 
     def test_control_nuke(self):
-        control = Control('bandana')
+        control = Controls('bandana')
         control.inits()
         self.assertTrue(Path('.pidentity/bandana.db').exists())
 
@@ -121,4 +121,3 @@ class ControlTest(TestCase):
         ctrl.swap(Contract().on('foo').to('10001').contact({"identifier": 10002}))
         contact = ctrl.on('foo').to('10001').contact
         self.assertEqual(contact.get('&identifier:=='), 10002)
-

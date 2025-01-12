@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from unittest import TestCase
 
-from pidentity import Contract, Control, Conditions
+from pidentity import Contract, Controls, Conditions
 from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, ON, TO, AT
 
 
@@ -11,7 +11,7 @@ DB = 'pidentity'
 
 class ConditionsTest(TestCase):
     def setUp(self) -> None:
-        self.control = Control('conditions')
+        self.control = Controls('conditions')
         self.control.inits()
         self.conditions = Conditions(self.control)
         return super().setUp()

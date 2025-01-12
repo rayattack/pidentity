@@ -71,5 +71,5 @@ class Conditions(object):
         if cached: return cached
         return self.__eval(CONTEXT)
 
-    def start(self):
+    def start(self) -> Controller:
         return Controller(self)
