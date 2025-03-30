@@ -19,7 +19,7 @@ SQL = '''
         metadata JSON,
         timestamped timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY(domain, upon, unto, what),
-        FOREIGN KEY(domain, upon, unto) references pidentity_contracts(domain, upon, unto)
+        FOREIGN KEY(domain, upon, unto) references contracts(domain, upon, unto)
     );
 '''
 

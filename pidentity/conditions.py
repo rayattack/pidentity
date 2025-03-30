@@ -1,9 +1,21 @@
+from abc import ABC
 from pidentity import Controller
 from pidentity.constants import CONTACT, CONTENT, CONTEXT, DOMAIN, PIDENTITY, ON, TO, AT
 from pidentity.macros import Operation, OPERATIONS
 
 from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING: from pidentity.control import Control
+
+
+class BaseCondition(ABC):
+    def __init__(self, ctrl: 'Control'):
+        self.__ctrl = ctrl
+    
+    def _eval(self, what: str):
+        contracts = self.__ctrl._contracts
+        condition = contracts.get(f'{self.__on}:{self.__to}')
+        if not condition: return None
+        return condition.get(what)
 
 
 class Conditions(object):

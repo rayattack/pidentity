@@ -24,7 +24,7 @@ def CONNECT_SQLITE(dbfile: str, timeout = 3):
 
 
 class BaseControl(ABC):
-    def __init__(self, engine: str = 'hashmap'):
+    def __init__(self, engine):
         self._db = None
         self._contracts = {}  # ['post:@:/v1/customers/:id', 'get:@:/v1/customers/id']
         self.__engine = engine
@@ -174,12 +174,12 @@ class BaseControl(ABC):
 
 
 class Control(BaseControl):
-    def __init__(self, engine = 'hashmap'):
+    def __init__(self, engine):
         super().__init__(engine)
 
     async def _save(self) -> 'Control':
         cursor = self.cursor
-        try: cursor.executemany(UPSERT_CONDITIONS_SQL, self._unsaved)
+        try: await cursor.executemany(UPSERT_CONDITIONS_SQL, self._unsaved)
         except IndexError: pass
         finally:
             cursor.close()
